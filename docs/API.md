@@ -2,140 +2,222 @@
 
 ## Objetivo
 
-A API sera responsavel pela comunicacao entre o frontend, o backend e o banco de dados do ExpenseFlow.
+A API faz a comunicacao entre o frontend e o banco de dados do ExpenseFlow. Foi implementada em NestJS, com Prisma e PostgreSQL.
+
+## Informacoes gerais
+
+| Item | Valor |
+|------|-------|
+| URL local | `http://localhost:3001` |
+| Formato | JSON (`Content-Type: application/json`), exceto a exportacao, que devolve CSV |
+| Autenticacao | `Authorization: Bearer <token>` em todas as rotas, exceto `/auth/register` e `/auth/login` |
+| Validade do token | 7 dias |
+| Valores monetarios | Numeros positivos com ate 2 casas decimais, entre 0,01 e 99.999.999,99. Nas respostas, o campo `amount` vem como texto (ex.: `"250.5"`). |
+| Datas | Enviadas como `AAAA-MM-DD`. Nas respostas, vem em ISO (ex.: `2026-10-05T00:00:00.000Z`). |
 
 ## Autenticacao
 
 ### POST /auth/register
 
-Responsavel pelo cadastro de um novo usuario.
+Cadastra um novo usuario. Ao criar a conta, o sistema cria as 5 categorias iniciais (Trabalho, Casa, Transporte, Alimentacao, Outros) e ja devolve o token, entao o usuario fica logado.
 
-O usuario deve informar:
+Corpo:
 
-Nome
+| Campo | Regra |
+|-------|-------|
+| `name` | Texto, de 2 a 100 caracteres |
+| `email` | E-mail valido. Guardado em minusculas e unico. |
+| `password` | Texto, de 8 a 72 caracteres |
 
-E-mail
+Resposta `201`:
 
-Senha
+```json
+{
+  "accessToken": "eyJhbGciOi...",
+  "user": { "id": 1, "name": "Ana", "email": "ana@exemplo.com" }
+}
+```
+
+Erros: `400` dados invalidos, `409` e-mail ja cadastrado.
 
 ### POST /auth/login
 
-Responsavel pelo login do usuario.
+Verifica e-mail e senha e devolve o token.
 
-O usuario deve informar:
+Corpo: `email` e `password`. Resposta `201`: igual a do cadastro.
 
-E-mail
+Erros: `401` e-mail ou senha invalidos (a mensagem e a mesma nos dois casos, para nao revelar se o e-mail existe).
 
-Senha
+### GET /auth/me
 
-A API deve verificar os dados de acesso e identificar o usuario autenticado.
+Devolve o usuario do token: `{ "id", "name", "email" }`. Usada pelo frontend para confirmar que a sessao ainda e valida.
 
-## Movimentacoes
-
-### GET /transactions
-
-Responsavel por listar as movimentacoes do usuario autenticado.
-
-A API deve retornar somente as movimentacoes pertencentes ao usuario.
-
-Pode receber filtros por:
-
-Periodo
-
-Categoria
-
-### POST /transactions
-
-Responsavel por cadastrar uma nova movimentacao.
-
-Dados necessarios:
-
-Tipo
-
-Descricao
-
-Valor
-
-Categoria
-
-Data
-
-### PUT /transactions/:id
-
-Responsavel por editar uma movimentacao existente.
-
-A API deve permitir a alteracao dos dados da movimentacao.
-
-A movimentacao deve pertencer ao usuario autenticado.
-
-### DELETE /transactions/:id
-
-Responsavel por excluir uma movimentacao.
-
-A API deve permitir a exclusao somente de movimentacoes pertencentes ao usuario autenticado.
+Erros: `401` token ausente, invalido ou expirado.
 
 ## Categorias
 
+Todas as rotas exigem token e trabalham apenas com as categorias do usuario autenticado.
+
 ### GET /categories
 
-Responsavel por listar as categorias do usuario autenticado.
+Lista as categorias, em ordem alfabetica: `[{ "id", "name", "userId", "createdAt" }]`.
 
 ### POST /categories
 
-Responsavel por criar uma nova categoria.
+Cria uma categoria.
 
-Dados necessarios:
+Corpo: `name` (de 1 a 50 caracteres; espacos nas pontas sao removidos).
 
-Nome
+Resposta `201`: a categoria criada. Erros: `400`, `409` ja existe categoria com esse nome (maiusculas e minusculas sao consideradas iguais).
 
-### PUT /categories/:id
+### PATCH /categories/:id
 
-Responsavel por editar uma categoria existente.
+Renomeia uma categoria. Corpo: `name`.
 
-A categoria deve pertencer ao usuario autenticado.
+Erros: `400`, `404` categoria nao encontrada (ou de outro usuario), `409` nome ja usado.
 
-## Dashboard
+### DELETE /categories/:id
 
-### GET /dashboard
+Remove uma categoria.
 
-Responsavel por retornar os dados necessarios para o dashboard.
+| Situacao | Resultado |
+|----------|-----------|
+| Categoria sem movimentacoes | Removida. Resposta `200`: `{ "deleted": true, "reassigned": 0 }` |
+| Categoria em uso, sem `reassignTo` | `409`, nada e alterado |
+| Categoria em uso, com `?reassignTo=<id>` | As movimentacoes passam para a categoria de destino e a categoria e removida, na mesma transacao. Resposta `200`: `{ "deleted": true, "reassigned": <quantidade> }` |
 
-A API deve fornecer:
+Erros: `404` categoria (ou destino) nao encontrada ou de outro usuario, `409` destino igual a origem.
 
-Saldo atual
+## Movimentacoes
 
-Total de entradas
+Todas as rotas exigem token e trabalham apenas com as movimentacoes do usuario autenticado.
 
-Total de saidas
+Formato de uma movimentacao:
 
-Gastos por categoria
+```json
+{
+  "id": 7,
+  "type": "EXPENSE",
+  "description": "Mercado",
+  "amount": "250.5",
+  "date": "2026-10-06T00:00:00.000Z",
+  "categoryId": 2,
+  "category": { "id": 2, "name": "Casa" }
+}
+```
+
+`type` e `INCOME` (entrada) ou `EXPENSE` (saida).
+
+### GET /transactions
+
+Lista as movimentacoes, da data mais recente para a mais antiga. Filtros opcionais, combinaveis, na query string:
+
+| Parametro | Descricao |
+|-----------|-----------|
+| `type` | `INCOME` ou `EXPENSE` |
+| `categoryId` | Numero da categoria |
+| `from` | Data inicial (`AAAA-MM-DD`), inclusiva |
+| `to` | Data final (`AAAA-MM-DD`), inclusiva |
+
+### GET /transactions/:id
+
+Devolve uma movimentacao. Erro: `404` se nao existir ou for de outro usuario.
+
+### POST /transactions
+
+Cadastra uma movimentacao.
+
+| Campo | Regra |
+|-------|-------|
+| `type` | `INCOME` ou `EXPENSE` |
+| `description` | Texto, de 1 a 200 caracteres |
+| `amount` | Maior que zero, ate 2 casas decimais, maximo 99.999.999,99 |
+| `date` | Data valida (`AAAA-MM-DD`) |
+| `categoryId` | Categoria do proprio usuario |
+
+Resposta `201`: a movimentacao criada. Erros: `400`, `404` categoria nao encontrada. O campo `userId` nao e aceito: o dono e sempre o usuario do token.
+
+### PATCH /transactions/:id
+
+Edita uma movimentacao. Todos os campos do cadastro sao opcionais e so os enviados sao alterados; as mesmas regras de validacao valem.
+
+Erros: `400`, `404` movimentacao ou categoria nao encontrada.
+
+### DELETE /transactions/:id
+
+Exclui uma movimentacao. Resposta `200`: `{ "deleted": true }`. Erro: `404`.
+
+## Resumo financeiro (dashboard)
+
+### GET /transactions/summary
+
+Calcula o saldo a partir das movimentacoes. Aceita os mesmos filtros de `GET /transactions`.
+
+Resposta `200`:
+
+```json
+{ "income": "1000.00", "expense": "250.50", "balance": "749.50" }
+```
+
+`balance` e entradas menos saidas e pode ser negativo. O saldo nao e armazenado: e sempre calculado.
+
+Os gastos por categoria, mostrados no dashboard, nao tem rota propria: o frontend soma as saidas de `GET /transactions?type=EXPENSE`.
 
 ## Exportacao
 
 ### GET /transactions/export
 
-Responsavel por exportar as movimentacoes financeiras do usuario.
+Exporta as movimentacoes do usuario em CSV. Aceita os mesmos filtros de `GET /transactions`.
 
-O formato da exportacao sera CSV.
+- Cabecalho: `Data,Tipo,Descricao,Categoria,Valor`
+- Tipo em portugues (`Entrada` ou `Saida`) e valor com 2 casas.
+- Codificacao UTF-8 com BOM, para o Excel abrir os acentos corretamente.
+- Campos com virgula ou aspas sao escapados. Textos que comecam com `=`, `+`, `-` ou `@` recebem um apostrofo na frente, para a planilha nao executa-los como formula.
+- Resposta com `Content-Disposition: attachment; filename="movimentacoes.csv"`.
 
-A API deve exportar somente as movimentacoes pertencentes ao usuario autenticado.
+Como a rota exige o token no header, o frontend baixa o arquivo com `fetch`, e nao por um link direto.
 
 ## Seguranca
 
-Todas as rotas que acessam dados financeiros devem verificar o usuario autenticado.
+- Todas as rotas de dados exigem usuario autenticado. Sem token, ou com token invalido ou expirado, a resposta e `401`.
+- Cada usuario acessa apenas as proprias categorias e movimentacoes. Recursos de outro usuario respondem `404`, e nao `403`, para nao revelar que existem.
+- Senhas sao guardadas com hash (bcrypt) e nunca sao devolvidas.
+- A API recusa campos que nao fazem parte do formato esperado (`400`).
 
-O usuario somente pode acessar suas proprias movimentacoes e categorias.
+## Respostas de erro
 
-O usuario nao pode acessar dados pertencentes a outro usuario.
+Os erros seguem o formato padrao do NestJS:
 
-## Respostas da API
+```json
+{ "message": "E-mail ja cadastrado", "error": "Conflict", "statusCode": 409 }
+```
 
-As respostas da API devem informar se a operacao foi realizada com sucesso ou se ocorreu algum erro.
+Em erros de validacao (`400`), `message` e uma lista com todos os problemas, em portugues:
 
-Em caso de erro, a API deve retornar uma mensagem informando o motivo do erro.
+```json
+{
+  "message": [
+    "O campo nome deve ter no minimo 2 caracteres",
+    "Informe um e-mail valido"
+  ],
+  "error": "Bad Request",
+  "statusCode": 400
+}
+```
 
-## Observacao
+| Codigo | Significado |
+|--------|-------------|
+| `200` / `201` | Sucesso |
+| `400` | Dados invalidos |
+| `401` | Nao autenticado, ou e-mail/senha incorretos |
+| `404` | Recurso nao encontrado (ou pertencente a outro usuario) |
+| `409` | Conflito: e-mail ou nome de categoria repetido, ou categoria em uso |
 
-Os endpoints definidos neste documento representam a estrutura inicial da API para o MVP do ExpenseFlow.
+## Diferencas em relacao ao planejamento inicial
 
-A implementacao pode ser ajustada durante o desenvolvimento caso seja identificada alguma necessidade tecnica.
+| Planejado | Implementado |
+|-----------|--------------|
+| `PUT /transactions/:id` e `PUT /categories/:id` | `PATCH`, pois a edicao e parcial |
+| `GET /dashboard` | `GET /transactions/summary` (totais). Os gastos por categoria sao calculados no frontend. |
+| Sem exclusao de categoria | `DELETE /categories/:id`, com `reassignTo` para categorias em uso |
+| - | `GET /transactions/:id` e `GET /auth/me`, que as telas de edicao e de sessao precisam |
