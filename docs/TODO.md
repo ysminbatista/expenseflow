@@ -2,151 +2,151 @@
 
 ## Preparacao do ambiente
 
-[ ] Instalar Node.js
+[ x ] Instalar Node.js
 
-[ ] Instalar Git
+[ x ] Instalar Git
 
-[ ] Instalar Docker
+[ x ] Instalar Docker
 
 [ x ] Instalar VS Code
 
 [ ] Criar repositorio no GitHub
 
-[ ] Criar estrutura inicial do projeto
+[ x ] Criar estrutura inicial do projeto
 
 ## Banco de dados
 
-[ ] Configurar PostgreSQL
+[ x ] Configurar PostgreSQL
 
-[ ] Configurar Prisma
+[ x ] Configurar Prisma
 
-[ ] Criar modelo User
+[ x ] Criar modelo User
 
-[ ] Criar modelo Category
+[ x ] Criar modelo Category
 
-[ ] Criar modelo Transaction
+[ x ] Criar modelo Transaction
 
-[ ] Criar relacionamentos entre os modelos
+[ x ] Criar relacionamentos entre os modelos
 
-[ ] Criar categorias iniciais
+[ x ] Criar categorias iniciais
 
-[ ] Executar primeira migracao
+[ x ] Executar primeira migracao
 
-[ ] Testar conexao com o banco
+[ x ] Testar conexao com o banco
 
 ## Autenticacao
 
-[ ] Criar cadastro de usuario
+[ x ] Criar cadastro de usuario
 
-[ ] Validar e-mail
+[ x ] Validar e-mail
 
-[ ] Garantir e-mail unico
+[ x ] Garantir e-mail unico
 
-[ ] Criar login
+[ x ] Criar login
 
-[ ] Implementar autenticacao
+[ x ] Implementar autenticacao
 
-[ ] Proteger rotas privadas
+[ x ] Proteger rotas privadas
 
-[ ] Testar acesso de usuarios
+[ x ] Testar acesso de usuarios
 
 ## Categorias
 
-[ ] Criar endpoint para listar categorias
+[ x ] Criar endpoint para listar categorias
 
-[ ] Criar endpoint para cadastrar categoria
+[ x ] Criar endpoint para cadastrar categoria
 
-[ ] Criar endpoint para editar categoria
+[ x ] Criar endpoint para editar categoria
 
-[ ] Implementar tratamento para categoria em uso
+[ x ] Implementar tratamento para categoria em uso
 
-[ ] Testar gerenciamento de categorias
+[ x ] Testar gerenciamento de categorias
 
 ## Movimentacoes
 
-[ ] Criar endpoint para cadastrar movimentacao
+[ x ] Criar endpoint para cadastrar movimentacao
 
-[ ] Validar tipo da movimentacao
+[ x ] Validar tipo da movimentacao
 
-[ ] Validar valor positivo
+[ x ] Validar valor positivo
 
-[ ] Criar endpoint para listar movimentacoes
+[ x ] Criar endpoint para listar movimentacoes
 
-[ ] Criar endpoint para editar movimentacao
+[ x ] Criar endpoint para editar movimentacao
 
-[ ] Criar endpoint para excluir movimentacao
+[ x ] Criar endpoint para excluir movimentacao
 
-[ ] Implementar filtro por periodo
+[ x ] Implementar filtro por periodo
 
-[ ] Implementar filtro por categoria
+[ x ] Implementar filtro por categoria
 
-[ ] Garantir isolamento dos dados dos usuarios
+[ x ] Garantir isolamento dos dados dos usuarios
 
-[ ] Testar movimentacoes
+[ x ] Testar movimentacoes
 
 ## Dashboard
 
-[ ] Implementar calculo do saldo
+[ x ] Implementar calculo do saldo
 
-[ ] Implementar total de entradas
+[ x ] Implementar total de entradas
 
-[ ] Implementar total de saidas
+[ x ] Implementar total de saidas
 
-[ ] Implementar gastos por categoria
+[ x ] Implementar gastos por categoria
 
-[ ] Criar endpoint do dashboard
+[ x ] Criar endpoint do dashboard (GET /transactions/summary)
 
 [ ] Testar dados do dashboard
 
 ## Frontend
 
-[ ] Criar tela de login
+[ x ] Criar tela de login
 
-[ ] Criar tela de cadastro
+[ x ] Criar tela de cadastro
 
-[ ] Criar tela de dashboard
+[ x ] Criar tela de dashboard
 
-[ ] Criar tela de movimentacoes
+[ x ] Criar tela de movimentacoes
 
-[ ] Criar tela de nova movimentacao
+[ x ] Criar tela de nova movimentacao
 
-[ ] Criar tela de edicao de movimentacao
+[ x ] Criar tela de edicao de movimentacao
 
-[ ] Criar tela de categorias
+[ x ] Criar tela de categorias
 
-[ ] Implementar filtros
+[ x ] Implementar filtros
 
 [ ] Implementar responsividade
 
 ## Exportacao
 
-[ ] Criar exportacao CSV
+[ x ] Criar exportacao CSV
 
-[ ] Garantir exportacao somente dos dados do usuario
+[ x ] Garantir exportacao somente dos dados do usuario
 
-[ ] Testar arquivo CSV
+[ x ] Testar arquivo CSV
 
 ## Testes
 
-[ ] Testar cadastro
+[ x ] Testar cadastro
 
-[ ] Testar login
+[ x ] Testar login
 
-[ ] Testar categorias
+[ x ] Testar categorias
 
-[ ] Testar cadastro de movimentacao
+[ x ] Testar cadastro de movimentacao
 
-[ ] Testar edicao de movimentacao
+[ x ] Testar edicao de movimentacao
 
-[ ] Testar exclusao de movimentacao
+[ x ] Testar exclusao de movimentacao
 
-[ ] Testar filtros
+[ x ] Testar filtros
 
 [ ] Testar dashboard
 
-[ ] Testar exportacao
+[ x ] Testar exportacao
 
-[ ] Testar seguranca
+[ x ] Testar seguranca
 
 ## Deploy
 
@@ -164,11 +164,11 @@
 
 ## Documentacao
 
-[ ] Revisar documentacao
+[ x ] Revisar documentacao
 
-[ ] Registrar decisoes importantes
+[ x ] Registrar decisoes importantes
 
-[ ] Documentar funcionalidades
+[ x ] Documentar funcionalidades
 
 [ ] Documentar testes
 
