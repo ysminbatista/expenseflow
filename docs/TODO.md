@@ -96,7 +96,7 @@
 
 [ x ] Criar endpoint do dashboard (GET /transactions/summary)
 
-[ ] Testar dados do dashboard
+[ x ] Testar dados do dashboard
 
 ## Frontend
 

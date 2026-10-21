@@ -232,9 +232,9 @@ export default function Movimentacoes() {
                 key={movimentacao.id}
                 className="rounded-xl bg-white p-5 shadow"
               >
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                  <div className="min-w-0">
+                    <h3 className="break-words text-lg font-semibold text-gray-900">
                       {movimentacao.description}
                     </h3>
 
@@ -244,7 +244,7 @@ export default function Movimentacoes() {
                     </p>
                   </div>
 
-                  <div className="text-right">
+                  <div className="sm:text-right">
                     <p
                       className={`text-lg font-bold ${
                         movimentacao.type === "INCOME"

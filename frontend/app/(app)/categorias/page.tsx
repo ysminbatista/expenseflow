@@ -134,7 +134,10 @@ export default function Categorias() {
             Nova categoria
           </h3>
 
-          <form onSubmit={adicionarCategoria} className="mt-4 flex gap-3">
+          <form
+            onSubmit={adicionarCategoria}
+            className="mt-4 flex flex-col gap-3 sm:flex-row"
+          >
             <input
               type="text"
               value={novaCategoria}
@@ -208,16 +211,16 @@ export default function Categorias() {
             {categorias.map((categoria) => (
               <div
                 key={categoria.id}
-                className="flex items-center justify-between gap-4 rounded-lg border border-gray-200 p-4"
+                className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-gray-200 p-4"
               >
                 {editandoId === categoria.id ? (
-                  <div className="flex flex-1 gap-3">
+                  <div className="flex flex-1 flex-wrap gap-3">
                     <input
                       type="text"
                       value={nomeEditando}
                       maxLength={50}
                       onChange={(e) => setNomeEditando(e.target.value)}
-                      className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-gray-900 outline-none focus:border-blue-500"
+                      className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-gray-900 outline-none focus:border-blue-500"
                     />
 
                     <button
@@ -238,7 +241,7 @@ export default function Categorias() {
                   </div>
                 ) : (
                   <>
-                    <p className="font-medium text-gray-900">
+                    <p className="min-w-0 break-words font-medium text-gray-900">
                       {categoria.name}
                     </p>
 
