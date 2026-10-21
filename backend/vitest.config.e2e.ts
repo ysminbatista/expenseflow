@@ -21,6 +21,10 @@ export default defineConfig({
     env: {
       DATABASE_URL: testUrl,
       JWT_SECRET: 'segredo-apenas-para-testes',
+      // Os testes fazem muitos cadastros em segundos; o limite real e
+      // exercitado em test/security.e2e-spec.ts
+      THROTTLE_LIMIT: '100000',
+      AUTH_THROTTLE_LIMIT: '100000',
     },
   },
 });

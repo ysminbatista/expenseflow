@@ -184,6 +184,8 @@ Como a rota exige o token no header, o frontend baixa o arquivo com `fetch`, e n
 - Cada usuario acessa apenas as proprias categorias e movimentacoes. Recursos de outro usuario respondem `404`, e nao `403`, para nao revelar que existem.
 - Senhas sao guardadas com hash (bcrypt) e nunca sao devolvidas.
 - A API recusa campos que nao fazem parte do formato esperado (`400`).
+- **CORS:** a API so aceita chamadas feitas pelo navegador a partir do endereco do frontend. Por padrao e `http://localhost:3000`. Em outro ambiente, defina `CORS_ORIGIN` no `.env` (varios enderecos separados por virgula).
+- **Limite de tentativas:** por IP, a cada minuto, `POST /auth/login` e `POST /auth/register` aceitam no maximo 5 requisicoes, e as demais rotas, 120. Passou disso, a resposta e `429` com a mensagem "Muitas tentativas. Aguarde um minuto e tente novamente.". Os limites podem ser ajustados com `AUTH_THROTTLE_LIMIT` e `THROTTLE_LIMIT` no `.env`.
 
 ## Respostas de erro
 
@@ -213,6 +215,7 @@ Em erros de validacao (`400`), `message` e uma lista com todos os problemas, em 
 | `401` | Nao autenticado, ou e-mail/senha incorretos |
 | `404` | Recurso nao encontrado (ou pertencente a outro usuario) |
 | `409` | Conflito: e-mail ou nome de categoria repetido, ou categoria em uso |
+| `429` | Muitas requisicoes em pouco tempo (limite de tentativas) |
 
 ## Diferencas em relacao ao planejamento inicial
 
