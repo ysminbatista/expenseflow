@@ -130,6 +130,13 @@ expenseflow/
 | [Telas](docs/SCREENS.md) | Telas e identidade visual |
 | [Roadmap](docs/ROADMAP.md) | O que foi feito e o que vem a seguir |
 
+## Autoria
+
+Desenvolvido por **Yasmin dos Santos Batista**.
+
+- LinkedIn: [linkedin.com/in/ysminbatista](https://www.linkedin.com/in/ysminbatista)
+- GitHub: [github.com/ysminbatista](https://github.com/ysminbatista)
+
 ## Próximos passos
 
 - Publicar a aplicação, com link de demonstração e conta de exemplo.

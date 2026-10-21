@@ -33,7 +33,7 @@ Frontend
 - [x] Identidade visual: logo, paleta, ícones SVG e ícone da aba
 - [x] Interações: avisos de ação, valores animados, barras por categoria, medidor de senha
 - [x] Layout responsivo
-- [ ] README do repositório, com prints e decisões técnicas
+- [x] README do repositório, com prints e decisões técnicas
 - [ ] Deploy (frontend, backend e banco) com link de demonstração
 - [ ] Conta de demonstração com dados de exemplo
 - [ ] Integração contínua (testes rodando a cada envio ao GitHub)
