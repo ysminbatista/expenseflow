@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import MovimentacaoForm from "@/components/MovimentacaoForm";
+import { useToast } from "@/components/Toast";
 import {
   ApiError,
   api,
@@ -13,6 +14,7 @@ import {
 
 function Editar() {
   const router = useRouter();
+  const toast = useToast();
   const id = useSearchParams().get("id");
 
   const [initial, setInitial] = useState<TransactionInput | null>(null);
@@ -33,7 +35,7 @@ function Editar() {
       .catch((err) =>
         setErro(
           err instanceof ApiError && err.status === 404
-            ? "Movimentacao nao encontrada."
+            ? "Movimentação não encontrada."
             : err instanceof ApiError
               ? err.message
               : "Erro inesperado",
@@ -43,19 +45,25 @@ function Editar() {
 
   async function salvar(values: TransactionInput) {
     await api(`/transactions/${id}`, { method: "PATCH", body: values });
+    toast("Alterações salvas!");
     router.push("/movimentacoes");
   }
 
   if (!id || erro) {
     return (
-      <main className="min-h-screen bg-gray-100 p-6">
-        <div className="mx-auto max-w-xl rounded-xl bg-white p-6 text-center shadow">
-          <p className="text-gray-800">{erro || "Movimentacao nao informada."}</p>
+      <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8 sm:px-6">
+        <div className="rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+          <span className="text-4xl" aria-hidden="true">
+            🔎
+          </span>
+          <p className="mt-3 text-gray-800">
+            {erro || "Movimentação não informada."}
+          </p>
           <Link
             href="/movimentacoes"
-            className="mt-4 inline-block font-semibold text-blue-600 hover:text-blue-800"
+            className="mt-4 inline-block font-semibold text-indigo-600 hover:text-indigo-800"
           >
-            Voltar para movimentacoes
+            Voltar para as movimentações
           </Link>
         </div>
       </main>
@@ -64,7 +72,7 @@ function Editar() {
 
   if (!initial) {
     return (
-      <main className="min-h-screen bg-gray-100 p-6">
+      <main className="flex-1 px-4 py-8">
         <p className="text-center text-gray-600">Carregando...</p>
       </main>
     );
@@ -72,8 +80,8 @@ function Editar() {
 
   return (
     <MovimentacaoForm
-      title="Editar movimentacao"
-      submitLabel="Salvar alteracao"
+      title="Editar movimentação"
+      submitLabel="Salvar alterações"
       initial={initial}
       onSubmit={salvar}
     />

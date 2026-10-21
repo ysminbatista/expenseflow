@@ -1,6 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import AnimatedMoney from "@/components/AnimatedMoney";
+import { useUser } from "@/components/UserContext";
 import {
   ApiError,
   api,
@@ -8,12 +11,25 @@ import {
   type Summary,
   type Transaction,
 } from "@/lib/api";
+import { categoryEmoji, greeting } from "@/lib/categories";
 
 type Dados = { summary: Summary; gastos: [string, number][] };
 
+// Frase que acompanha o saldo
+function humor(saldo: number, temMovimentacao: boolean) {
+  if (!temMovimentacao) {
+    return "Cadastre a sua primeira movimentação para começar 🚀";
+  }
+  if (saldo > 0) return "Você está no azul! Continue assim 🎉";
+  if (saldo < 0) return "Atenção: as saídas passaram das entradas 😬";
+  return "Tudo zerado: entradas e saídas empatadas ⚖️";
+}
+
 export default function Dashboard() {
+  const user = useUser();
   const [dados, setDados] = useState<Dados | null>(null);
   const [erro, setErro] = useState("");
+  const [barras, setBarras] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -21,7 +37,7 @@ export default function Dashboard() {
       api<Transaction[]>("/transactions?type=EXPENSE"),
     ])
       .then(([summary, saidas]) => {
-        // Soma as saidas por categoria, do maior gasto para o menor
+        // Soma as saídas por categoria, do maior gasto para o menor
         const porCategoria = new Map<string, number>();
         for (const saida of saidas) {
           const nome = saida.category.name;
@@ -32,6 +48,8 @@ export default function Dashboard() {
         }
         const gastos = [...porCategoria.entries()].sort((a, b) => b[1] - a[1]);
         setDados({ summary, gastos });
+        // Libera a animação das barras depois do primeiro desenho
+        requestAnimationFrame(() => requestAnimationFrame(() => setBarras(true)));
       })
       .catch((err) =>
         setErro(err instanceof ApiError ? err.message : "Erro inesperado"),
@@ -39,90 +57,153 @@ export default function Dashboard() {
   }, []);
 
   const saldo = Number(dados?.summary.balance ?? 0);
+  const entradas = Number(dados?.summary.income ?? 0);
+  const saidas = Number(dados?.summary.expense ?? 0);
+  const totalGastos = dados?.gastos.reduce((soma, [, v]) => soma + v, 0) ?? 0;
+  const primeiroNome = user?.name.split(" ")[0];
 
   return (
-    <main className="min-h-screen bg-gray-100 p-6">
-      <div className="mx-auto max-w-5xl">
-        <h1 className="text-3xl font-bold text-gray-900">ExpenseFlow</h1>
-
-        <h2 className="mt-2 text-xl text-gray-800">Dashboard</h2>
-
-        {erro && (
-          <p
-            role="alert"
-            className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700"
-          >
-            {erro}
+    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6">
+      <div className="flex flex-wrap items-end justify-between gap-4 animate-fade-up">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+            {greeting()}, {primeiroNome} <span aria-hidden="true">👋</span>
+          </h1>
+          <p className="mt-1 text-gray-600">
+            {dados
+              ? humor(saldo, entradas + saidas > 0)
+              : "Buscando os seus números..."}
           </p>
-        )}
+        </div>
 
-        {!dados && !erro && (
-          <p className="mt-8 text-center text-gray-600">Carregando...</p>
-        )}
-
-        {dados && (
-          <>
-            <div className="mt-8 grid gap-4 md:grid-cols-3">
-              <div className="rounded-xl bg-white p-6 shadow">
-                <p className="font-medium text-gray-800">Saldo</p>
-
-                <p
-                  className={`mt-2 text-2xl font-bold ${
-                    saldo < 0 ? "text-red-600" : "text-gray-900"
-                  }`}
-                >
-                  {formatMoney(dados.summary.balance)}
-                </p>
-              </div>
-
-              <div className="rounded-xl bg-white p-6 shadow">
-                <p className="font-medium text-gray-800">Entradas</p>
-
-                <p className="mt-2 text-2xl font-bold text-green-600">
-                  {formatMoney(dados.summary.income)}
-                </p>
-              </div>
-
-              <div className="rounded-xl bg-white p-6 shadow">
-                <p className="font-medium text-gray-800">Saidas</p>
-
-                <p className="mt-2 text-2xl font-bold text-red-600">
-                  {formatMoney(dados.summary.expense)}
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-6 rounded-xl bg-white p-6 shadow">
-              <h3 className="text-xl font-semibold text-gray-900">
-                Gastos por categoria
-              </h3>
-
-              {dados.gastos.length === 0 ? (
-                <p className="mt-4 text-gray-700">
-                  Nenhuma saida cadastrada.
-                </p>
-              ) : (
-                <div className="mt-4 space-y-3">
-                  {dados.gastos.map(([categoria, valor]) => (
-                    <div
-                      key={categoria}
-                      className="flex items-center justify-between border-b pb-3"
-                    >
-                      <span className="font-medium text-gray-900">
-                        {categoria}
-                      </span>
-
-                      <span className="font-semibold text-gray-900">
-                        {formatMoney(valor)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </>
-        )}
+        <Link
+          href="/nova-movimentacao"
+          className="rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-3 font-semibold text-white shadow-md shadow-indigo-500/30 transition hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0"
+        >
+          + Nova movimentação
+        </Link>
       </div>
+
+      {erro && (
+        <p
+          role="alert"
+          className="mt-6 rounded-xl bg-rose-50 p-4 text-sm text-rose-700"
+        >
+          {erro}
+        </p>
+      )}
+
+      {dados && (
+        <>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            <div
+              className={`animate-fade-up rounded-2xl p-6 text-white shadow-lg transition hover:-translate-y-1 hover:shadow-xl ${
+                saldo < 0
+                  ? "bg-gradient-to-br from-rose-500 to-rose-600 shadow-rose-500/30"
+                  : "bg-gradient-to-br from-indigo-600 to-violet-600 shadow-indigo-500/30"
+              }`}
+            >
+              <p className="flex items-center gap-2 font-medium text-white/85">
+                <span aria-hidden="true">💰</span> Saldo
+              </p>
+              <p className="mt-3 text-3xl font-extrabold tracking-tight">
+                <AnimatedMoney value={saldo} />
+              </p>
+            </div>
+
+            <div
+              style={{ animationDelay: "90ms" }}
+              className="animate-fade-up rounded-2xl border border-emerald-100 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+            >
+              <p className="flex items-center gap-2 font-medium text-gray-700">
+                <span aria-hidden="true">📈</span> Entradas
+              </p>
+              <p className="mt-3 text-3xl font-extrabold tracking-tight text-emerald-600">
+                <AnimatedMoney value={entradas} />
+              </p>
+            </div>
+
+            <div
+              style={{ animationDelay: "180ms" }}
+              className="animate-fade-up rounded-2xl border border-rose-100 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+            >
+              <p className="flex items-center gap-2 font-medium text-gray-700">
+                <span aria-hidden="true">📉</span> Saídas
+              </p>
+              <p className="mt-3 text-3xl font-extrabold tracking-tight text-rose-600">
+                <AnimatedMoney value={saidas} />
+              </p>
+            </div>
+          </div>
+
+          <section
+            style={{ animationDelay: "270ms" }}
+            className="mt-6 animate-fade-up rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+          >
+            <h2 className="text-xl font-bold text-gray-900">
+              Gastos por categoria
+            </h2>
+
+            {dados.gastos.length === 0 ? (
+              <div className="mt-6 flex flex-col items-center gap-2 py-6 text-center">
+                <span className="text-4xl" aria-hidden="true">
+                  🌱
+                </span>
+                <p className="text-gray-700">Nenhuma saída cadastrada ainda.</p>
+              </div>
+            ) : (
+              <ul className="mt-5 space-y-5">
+                {dados.gastos.map(([categoria, valor]) => {
+                  const percentual = totalGastos ? (valor / totalGastos) * 100 : 0;
+                  return (
+                    <li key={categoria}>
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="flex min-w-0 items-center gap-2 font-medium text-gray-900">
+                          <span aria-hidden="true" className="text-xl">
+                            {categoryEmoji(categoria)}
+                          </span>
+                          <span className="truncate">{categoria}</span>
+                        </span>
+
+                        <span className="shrink-0 text-right">
+                          <span className="font-semibold text-gray-900">
+                            {formatMoney(valor)}
+                          </span>
+                          <span className="ml-2 text-sm text-gray-500">
+                            {percentual.toFixed(0)}%
+                          </span>
+                        </span>
+                      </div>
+
+                      <div
+                        className="mt-2 h-2.5 overflow-hidden rounded-full bg-gray-100"
+                        role="img"
+                        aria-label={`${categoria}: ${percentual.toFixed(0)}% dos gastos`}
+                      >
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 transition-[width] duration-1000 ease-out"
+                          style={{ width: barras ? `${percentual}%` : "0%" }}
+                        />
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </section>
+        </>
+      )}
+
+      {!dados && !erro && (
+        <div className="mt-8 grid gap-4 md:grid-cols-3" aria-hidden="true">
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className="h-28 animate-pulse rounded-2xl bg-gray-200/70"
+            />
+          ))}
+        </div>
+      )}
     </main>
   );
 }

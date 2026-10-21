@@ -3,7 +3,12 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import AuthShell from "@/components/AuthShell";
+import PasswordInput from "@/components/PasswordInput";
 import { ApiError, login, setToken } from "@/lib/api";
+
+const inputClass =
+  "mt-2 w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100";
 
 export default function Login() {
   const router = useRouter();
@@ -22,84 +27,81 @@ export default function Login() {
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Erro inesperado");
-    } finally {
       setLoading(false);
     }
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
-        <h1 className="text-3xl font-bold text-center text-gray-900">
-          ExpenseFlow
-        </h1>
+    <AuthShell title="Bem-vindo de volta 👋" subtitle="Entre para ver o seu saldo">
+      <form className="space-y-5" onSubmit={handleSubmit}>
+        <div>
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
+            E-mail
+          </label>
 
-        <h2 className="mt-2 text-center text-xl text-gray-600">Login</h2>
+          <input
+            id="email"
+            type="email"
+            required
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="voce@exemplo.com"
+            className={inputClass}
+          />
+        </div>
 
-        <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              E-mail
-            </label>
+        <div>
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Senha
+          </label>
 
-            <input
-              id="email"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Digite seu e-mail"
-              className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Senha
-            </label>
-
-            <input
+          <div className="mt-2">
+            <PasswordInput
               id="password"
-              type="password"
               required
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Digite sua senha"
-              className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
+              placeholder="Digite a sua senha"
+              className="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
             />
           </div>
+        </div>
 
-          {error && (
-            <p role="alert" className="text-sm text-red-600">
-              {error}
-            </p>
-          )}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+        {error && (
+          <p
+            role="alert"
+            className="animate-pop rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700"
           >
-            {loading ? "Entrando..." : "Entrar"}
-          </button>
-
-          <p className="mt-4 text-center text-sm text-gray-600">
-            Ainda nao tem uma conta?{" "}
-            <Link
-              href="/cadastro"
-              className="font-semibold text-blue-600 hover:text-blue-700"
-            >
-              Criar conta
-            </Link>
+            {error}
           </p>
-        </form>
-      </div>
-    </main>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-3 font-semibold text-white shadow-md shadow-indigo-500/30 transition hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 disabled:translate-y-0 disabled:opacity-60"
+        >
+          {loading ? "Entrando..." : "Entrar"}
+        </button>
+
+        <p className="text-center text-sm text-gray-600">
+          Ainda não tem uma conta?{" "}
+          <Link
+            href="/cadastro"
+            className="font-semibold text-indigo-600 hover:text-indigo-800"
+          >
+            Criar conta
+          </Link>
+        </p>
+      </form>
+    </AuthShell>
   );
 }

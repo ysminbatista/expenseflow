@@ -44,7 +44,7 @@ export class CategoriesService {
 
     if (reassignTo === undefined || Number.isNaN(reassignTo)) {
       throw new ConflictException(
-        `Categoria usada por ${inUse} movimentacao(oes). Informe reassignTo com a categoria de destino.`,
+        `Categoria usada por ${inUse} movimentação(ões). Informe reassignTo com a categoria de destino.`,
       );
     }
     if (reassignTo === id) {
@@ -66,7 +66,7 @@ export class CategoriesService {
     const category = await this.prisma.category.findFirst({
       where: { id, userId },
     });
-    if (!category) throw new NotFoundException('Categoria nao encontrada');
+    if (!category) throw new NotFoundException('Categoria não encontrada');
     return category;
   }
 
@@ -83,7 +83,7 @@ export class CategoriesService {
       },
     });
     if (dup) {
-      throw new ConflictException('Ja existe uma categoria com esse nome');
+      throw new ConflictException('Já existe uma categoria com esse nome');
     }
   }
 }

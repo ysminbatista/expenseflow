@@ -6,7 +6,7 @@ const FIELDS: Record<string, string> = {
   email: 'e-mail',
   password: 'senha',
   type: 'tipo',
-  description: 'descricao',
+  description: 'descrição',
   amount: 'valor',
   date: 'data',
   categoryId: 'categoria',
@@ -25,12 +25,12 @@ function translate(
   const limit = original.match(/\d+(\.\d+)?/)?.[0];
   switch (rule) {
     case 'isEmail':
-      return 'Informe um e-mail valido';
+      return 'Informe um e-mail válido';
     case 'minLength':
       if (limit === '1') return `Informe o campo ${field}`;
-      return `O campo ${field} deve ter no minimo ${limit} caracteres`;
+      return `O campo ${field} deve ter no mínimo ${limit} caracteres`;
     case 'maxLength':
-      return `O campo ${field} deve ter no maximo ${limit} caracteres`;
+      return `O campo ${field} deve ter no máximo ${limit} caracteres`;
     case 'isString':
     case 'isNotEmpty':
       return `Informe o campo ${field}`;
@@ -38,20 +38,20 @@ function translate(
       return `O campo ${field} deve ser maior que zero`;
     case 'isNumber':
       return property === 'amount'
-        ? 'O valor deve ser um numero com no maximo 2 casas decimais'
-        : `O campo ${field} deve ser um numero`;
+        ? 'O valor deve ser um número com no máximo 2 casas decimais'
+        : `O campo ${field} deve ser um número`;
     case 'max':
-      return `O campo ${field} deve ser no maximo ${limit}`;
+      return `O campo ${field} deve ser no máximo ${limit}`;
     case 'isInt':
-      return `O campo ${field} e invalido`;
+      return `O campo ${field} é inválido`;
     case 'isEnum':
-      return `O campo ${field} e invalido`;
+      return `O campo ${field} é inválido`;
     case 'isDateString':
-      return `O campo ${field} deve ser uma data valida`;
+      return `O campo ${field} deve ser uma data válida`;
     case 'whitelistValidation':
-      return `O campo ${property} nao e permitido`;
+      return `O campo ${property} não é permitido`;
     default:
-      return `O campo ${field} e invalido`;
+      return `O campo ${field} é inválido`;
   }
 }
 

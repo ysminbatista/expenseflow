@@ -3,7 +3,31 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import AuthShell from "@/components/AuthShell";
+import PasswordInput from "@/components/PasswordInput";
 import { ApiError, register, setToken } from "@/lib/api";
+
+const inputClass =
+  "mt-2 w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100";
+
+// Força da senha: 0 (vazia) a 4, só para orientar quem está criando a conta
+function passwordStrength(password: string) {
+  if (!password) return 0;
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (password.length >= 12) score++;
+  if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
+  if (/\d/.test(password) && /[^A-Za-z0-9]/.test(password)) score++;
+  return Math.max(score, 1);
+}
+
+const STRENGTH = [
+  { label: "", color: "bg-gray-200" },
+  { label: "Fraca", color: "bg-rose-500" },
+  { label: "Razoável", color: "bg-amber-500" },
+  { label: "Boa", color: "bg-lime-500" },
+  { label: "Forte", color: "bg-emerald-500" },
+];
 
 export default function Cadastro() {
   const router = useRouter();
@@ -12,6 +36,8 @@ export default function Cadastro() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const strength = passwordStrength(password);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -23,106 +49,125 @@ export default function Cadastro() {
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Erro inesperado");
-    } finally {
       setLoading(false);
     }
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
-        <h1 className="text-3xl font-bold text-center text-gray-900">
-          ExpenseFlow
-        </h1>
+    <AuthShell
+      title="Crie a sua conta ✨"
+      subtitle="Leva menos de um minuto"
+    >
+      <form className="space-y-5" onSubmit={handleSubmit}>
+        <div>
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Nome
+          </label>
 
-        <h2 className="mt-2 text-center text-xl text-gray-600">Criar conta</h2>
+          <input
+            id="name"
+            type="text"
+            required
+            minLength={2}
+            maxLength={100}
+            autoComplete="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Como devemos te chamar?"
+            className={inputClass}
+          />
+        </div>
 
-        <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
-          <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Nome
-            </label>
+        <div>
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
+            E-mail
+          </label>
 
-            <input
-              id="name"
-              type="text"
-              required
-              minLength={2}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Digite seu nome"
-              className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
-            />
-          </div>
+          <input
+            id="email"
+            type="email"
+            required
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="voce@exemplo.com"
+            className={inputClass}
+          />
+        </div>
 
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              E-mail
-            </label>
+        <div>
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Senha
+          </label>
 
-            <input
-              id="email"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Digite seu e-mail"
-              className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Senha
-            </label>
-
-            <input
+          <div className="mt-2">
+            <PasswordInput
               id="password"
-              type="password"
               required
               minLength={8}
               maxLength={72}
+              autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Minimo de 8 caracteres"
-              className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
+              placeholder="Mínimo de 8 caracteres"
+              className="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
             />
           </div>
 
-          {error && (
-            <p role="alert" className="text-sm text-red-600">
-              {error}
-            </p>
-          )}
+          {/* Medidor de força da senha */}
+          <div className="mt-3 flex items-center gap-3" aria-live="polite">
+            <div className="flex flex-1 gap-1" aria-hidden="true">
+              {[1, 2, 3, 4].map((level) => (
+                <span
+                  key={level}
+                  className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
+                    strength >= level ? STRENGTH[strength].color : "bg-gray-200"
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="w-16 text-right text-xs font-medium text-gray-600">
+              {STRENGTH[strength].label}
+            </span>
+          </div>
+        </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+        {error && (
+          <p
+            role="alert"
+            className="animate-pop rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700"
           >
-            {loading ? "Criando..." : "Criar conta"}
-          </button>
-
-          <p className="mt-4 text-center text-sm text-gray-600">
-            Ja tem uma conta?{" "}
-            <Link
-              href="/login"
-              className="font-semibold text-blue-600 hover:text-blue-700"
-            >
-              Entrar
-            </Link>
+            {error}
           </p>
-        </form>
-      </div>
-    </main>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-3 font-semibold text-white shadow-md shadow-indigo-500/30 transition hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 disabled:translate-y-0 disabled:opacity-60"
+        >
+          {loading ? "Criando..." : "Criar conta"}
+        </button>
+
+        <p className="text-center text-sm text-gray-600">
+          Já tem uma conta?{" "}
+          <Link
+            href="/login"
+            className="font-semibold text-indigo-600 hover:text-indigo-800"
+          >
+            Entrar
+          </Link>
+        </p>
+      </form>
+    </AuthShell>
   );
 }

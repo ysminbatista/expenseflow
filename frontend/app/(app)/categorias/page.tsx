@@ -1,9 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useToast } from "@/components/Toast";
 import { ApiError, api, type Category } from "@/lib/api";
+import { categoryEmoji } from "@/lib/categories";
+
+const inputClass =
+  "rounded-xl border border-gray-300 px-4 py-3 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100";
 
 export default function Categorias() {
+  const toast = useToast();
   const [categorias, setCategorias] = useState<Category[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
@@ -32,7 +38,7 @@ export default function Categorias() {
     carregar();
   }, [carregar]);
 
-  // Executa uma acao na API e recarrega a lista; devolve true se deu certo
+  // Executa uma ação na API e recarrega a lista; devolve true se deu certo
   async function executar(acao: () => Promise<unknown>) {
     setErro("");
     try {
@@ -55,7 +61,10 @@ export default function Categorias() {
     const ok = await executar(() =>
       api("/categories", { method: "POST", body: { name: nome } }),
     );
-    if (ok) setNovaCategoria("");
+    if (ok) {
+      setNovaCategoria("");
+      toast(`Categoria "${nome}" criada!`);
+    }
   }
 
   function iniciarEdicao(categoria: Category) {
@@ -81,7 +90,10 @@ export default function Categorias() {
         body: { name: nome },
       }),
     );
-    if (ok) cancelarEdicao();
+    if (ok) {
+      cancelarEdicao();
+      toast("Categoria atualizada!");
+    }
   }
 
   async function excluirCategoria(categoria: Category) {
@@ -92,8 +104,9 @@ export default function Categorias() {
     try {
       await api(`/categories/${categoria.id}`, { method: "DELETE" });
       await carregar();
+      toast("Categoria excluída.", "info");
     } catch (err) {
-      // 409: categoria em uso, pede o destino das movimentacoes
+      // 409: categoria em uso, pede o destino das movimentações
       if (err instanceof ApiError && err.status === 409) {
         setRemovendo(categoria);
         setDestinoId("");
@@ -110,165 +123,181 @@ export default function Categorias() {
         method: "DELETE",
       }),
     );
-    if (ok) setRemovendo(null);
+    if (ok) {
+      setRemovendo(null);
+      toast("Movimentações movidas e categoria excluída.", "info");
+    }
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-6">
-      <div className="mx-auto max-w-3xl">
-        <h1 className="text-3xl font-bold text-gray-900">ExpenseFlow</h1>
+    <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8 sm:px-6">
+      <div className="animate-fade-up">
+        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+          Minhas categorias
+        </h1>
+        <p className="mt-1 text-gray-600">
+          Organize as suas movimentações do jeito que fizer sentido para você.
+        </p>
+      </div>
 
-        <h2 className="mt-2 text-xl text-gray-800">Minhas categorias</h2>
+      {erro && (
+        <p
+          role="alert"
+          className="mt-4 animate-pop rounded-xl bg-rose-50 p-3 text-sm text-rose-700"
+        >
+          {erro}
+        </p>
+      )}
 
-        {erro && (
-          <p
-            role="alert"
-            className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700"
+      <section className="mt-6 animate-fade-up rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h2 className="text-lg font-semibold text-gray-900">Nova categoria</h2>
+
+        <form
+          onSubmit={adicionarCategoria}
+          className="mt-4 flex flex-col gap-3 sm:flex-row"
+        >
+          <input
+            type="text"
+            aria-label="Nome da nova categoria"
+            value={novaCategoria}
+            maxLength={50}
+            onChange={(e) => setNovaCategoria(e.target.value)}
+            placeholder="Ex.: Saúde, Lazer, Pets"
+            className={`${inputClass} flex-1`}
+          />
+
+          <button
+            type="submit"
+            className="rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-3 font-semibold text-white shadow-md shadow-indigo-500/30 transition hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0"
           >
-            {erro}
+            Adicionar
+          </button>
+        </form>
+      </section>
+
+      {removendo && (
+        <section
+          role="alertdialog"
+          aria-label="Escolha o destino das movimentações"
+          className="mt-6 animate-pop rounded-2xl border border-amber-300 bg-amber-50 p-6"
+        >
+          <p className="font-medium text-gray-900">
+            A categoria &quot;{removendo.name}&quot; está sendo usada em
+            movimentações. Para excluí-la, escolha para qual categoria elas
+            serão movidas:
           </p>
-        )}
 
-        <div className="mt-8 rounded-xl bg-white p-6 shadow">
-          <h3 className="text-xl font-semibold text-gray-900">
-            Nova categoria
-          </h3>
-
-          <form
-            onSubmit={adicionarCategoria}
-            className="mt-4 flex flex-col gap-3 sm:flex-row"
-          >
-            <input
-              type="text"
-              value={novaCategoria}
-              maxLength={50}
-              onChange={(e) => setNovaCategoria(e.target.value)}
-              placeholder="Nome da categoria"
-              className="flex-1 rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none focus:border-blue-500"
-            />
+          <div className="mt-4 flex flex-wrap gap-3">
+            <select
+              aria-label="Categoria de destino"
+              value={destinoId}
+              onChange={(e) => setDestinoId(e.target.value)}
+              className="min-w-0 flex-1 rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-gray-900"
+            >
+              <option value="">Selecione a categoria de destino</option>
+              {categorias
+                .filter((c) => c.id !== removendo.id)
+                .map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+            </select>
 
             <button
-              type="submit"
-              className="rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700"
+              type="button"
+              disabled={!destinoId}
+              onClick={confirmarRemocao}
+              className="rounded-xl bg-rose-600 px-4 py-2.5 font-semibold text-white transition hover:bg-rose-700 active:scale-95 disabled:opacity-50"
             >
-              Adicionar
+              Mover e excluir
             </button>
-          </form>
-        </div>
 
-        {removendo && (
-          <div className="mt-6 rounded-xl border border-yellow-300 bg-yellow-50 p-6">
-            <p className="font-medium text-gray-900">
-              A categoria &quot;{removendo.name}&quot; esta sendo usada em
-              movimentacoes. Para exclui-la, escolha para qual categoria elas
-              serao movidas:
-            </p>
-
-            <div className="mt-4 flex flex-wrap gap-3">
-              <select
-                value={destinoId}
-                onChange={(e) => setDestinoId(e.target.value)}
-                className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900"
-              >
-                <option value="">Selecione a categoria de destino</option>
-                {categorias
-                  .filter((c) => c.id !== removendo.id)
-                  .map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-              </select>
-
-              <button
-                type="button"
-                disabled={!destinoId}
-                onClick={confirmarRemocao}
-                className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700 disabled:opacity-50"
-              >
-                Mover e excluir
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setRemovendo(null)}
-                className="rounded-lg bg-gray-500 px-4 py-2 font-semibold text-white hover:bg-gray-600"
-              >
-                Cancelar
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setRemovendo(null)}
+              className="rounded-xl bg-gray-500 px-4 py-2.5 font-semibold text-white transition hover:bg-gray-600 active:scale-95"
+            >
+              Cancelar
+            </button>
           </div>
+        </section>
+      )}
+
+      <section className="mt-6 animate-fade-up rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h2 className="text-lg font-semibold text-gray-900">
+          Categorias cadastradas
+        </h2>
+
+        {carregando && (
+          <p className="mt-4 text-gray-600">Carregando...</p>
         )}
 
-        <div className="mt-6 rounded-xl bg-white p-6 shadow">
-          <h3 className="text-xl font-semibold text-gray-900">
-            Categorias cadastradas
-          </h3>
+        <ul className="mt-4 space-y-3">
+          {categorias.map((categoria) => (
+            <li
+              key={categoria.id}
+              className="flex animate-pop flex-wrap items-center justify-between gap-3 rounded-xl border border-gray-200 p-4 transition hover:border-indigo-200 hover:bg-indigo-50/30"
+            >
+              {editandoId === categoria.id ? (
+                <div className="flex flex-1 flex-wrap gap-3">
+                  <input
+                    type="text"
+                    aria-label="Novo nome da categoria"
+                    value={nomeEditando}
+                    maxLength={50}
+                    onChange={(e) => setNomeEditando(e.target.value)}
+                    className={`${inputClass} min-w-0 flex-1 py-2`}
+                  />
 
-          <div className="mt-4 space-y-3">
-            {carregando && <p className="text-gray-700">Carregando...</p>}
+                  <button
+                    type="button"
+                    onClick={salvarEdicao}
+                    className="rounded-xl bg-emerald-600 px-4 py-2 font-semibold text-white transition hover:bg-emerald-700 active:scale-95"
+                  >
+                    Salvar
+                  </button>
 
-            {categorias.map((categoria) => (
-              <div
-                key={categoria.id}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-gray-200 p-4"
-              >
-                {editandoId === categoria.id ? (
-                  <div className="flex flex-1 flex-wrap gap-3">
-                    <input
-                      type="text"
-                      value={nomeEditando}
-                      maxLength={50}
-                      onChange={(e) => setNomeEditando(e.target.value)}
-                      className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-gray-900 outline-none focus:border-blue-500"
-                    />
+                  <button
+                    type="button"
+                    onClick={cancelarEdicao}
+                    className="rounded-xl bg-gray-500 px-4 py-2 font-semibold text-white transition hover:bg-gray-600 active:scale-95"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <p className="flex min-w-0 items-center gap-3 font-medium text-gray-900">
+                    <span aria-hidden="true" className="text-2xl">
+                      {categoryEmoji(categoria.name)}
+                    </span>
+                    <span className="min-w-0 break-words">{categoria.name}</span>
+                  </p>
 
+                  <div className="flex gap-2">
                     <button
                       type="button"
-                      onClick={salvarEdicao}
-                      className="rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700"
+                      onClick={() => iniciarEdicao(categoria)}
+                      className="rounded-xl bg-amber-500 px-3 py-2 font-semibold text-white transition hover:bg-amber-600 active:scale-95 sm:px-4"
                     >
-                      Salvar
+                      Editar
                     </button>
 
                     <button
                       type="button"
-                      onClick={cancelarEdicao}
-                      className="rounded-lg bg-gray-500 px-4 py-2 font-semibold text-white hover:bg-gray-600"
+                      onClick={() => excluirCategoria(categoria)}
+                      className="rounded-xl bg-rose-600 px-3 py-2 font-semibold text-white transition hover:bg-rose-700 active:scale-95 sm:px-4"
                     >
-                      Cancelar
+                      Excluir
                     </button>
                   </div>
-                ) : (
-                  <>
-                    <p className="min-w-0 break-words font-medium text-gray-900">
-                      {categoria.name}
-                    </p>
-
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => iniciarEdicao(categoria)}
-                        className="rounded-lg bg-yellow-500 px-3 py-2 font-semibold text-white hover:bg-yellow-600 sm:px-4"
-                      >
-                        Editar
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => excluirCategoria(categoria)}
-                        className="rounded-lg bg-red-600 px-3 py-2 font-semibold text-white hover:bg-red-700 sm:px-4"
-                      >
-                        Excluir
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+      </section>
     </main>
   );
 }

@@ -3,42 +3,59 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import AuthShell from "@/components/AuthShell";
 import { getToken } from "@/lib/api";
+
+const FEATURES = [
+  { icon: "💸", text: "Registre entradas e saídas em segundos" },
+  { icon: "🏷️", text: "Organize tudo por categorias" },
+  { icon: "📊", text: "Acompanhe o saldo e para onde vai o dinheiro" },
+  { icon: "📄", text: "Exporte seus dados em CSV" },
+];
 
 export default function Home() {
   const router = useRouter();
 
-  // Quem ja esta logado vai direto para o dashboard
+  // Quem já está logado vai direto para o dashboard
   useEffect(() => {
     if (getToken()) router.replace("/dashboard");
   }, [router]);
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 text-center shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-900">ExpenseFlow</h1>
-
-        <p className="mt-3 text-gray-600">
-          Controle suas entradas e saidas, organize por categorias e acompanhe
-          o seu saldo.
-        </p>
-
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Link
-            href="/login"
-            className="flex-1 rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700"
+    <AuthShell
+      title="Seu dinheiro, no controle"
+      subtitle="Controle financeiro pessoal, simples e bonito."
+    >
+      <ul className="space-y-3">
+        {FEATURES.map((feature, index) => (
+          <li
+            key={feature.text}
+            style={{ animationDelay: `${150 + index * 90}ms` }}
+            className="flex animate-fade-up items-center gap-3 rounded-xl bg-gray-50 px-4 py-3 text-sm text-gray-800"
           >
-            Entrar
-          </Link>
+            <span className="text-xl" aria-hidden="true">
+              {feature.icon}
+            </span>
+            {feature.text}
+          </li>
+        ))}
+      </ul>
 
-          <Link
-            href="/cadastro"
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-3 font-semibold text-gray-800 hover:bg-gray-50"
-          >
-            Criar conta
-          </Link>
-        </div>
+      <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+        <Link
+          href="/login"
+          className="flex-1 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-3 text-center font-semibold text-white shadow-md shadow-indigo-500/30 transition hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0"
+        >
+          Entrar
+        </Link>
+
+        <Link
+          href="/cadastro"
+          className="flex-1 rounded-xl border border-gray-300 px-4 py-3 text-center font-semibold text-gray-800 transition hover:-translate-y-0.5 hover:bg-gray-50 active:translate-y-0"
+        >
+          Criar conta
+        </Link>
       </div>
-    </main>
+    </AuthShell>
   );
 }

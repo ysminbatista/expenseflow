@@ -55,7 +55,7 @@ export class TransactionsService {
       where: { id, userId },
       include: { category: { select: { id: true, name: true } } },
     });
-    if (!tx) throw new NotFoundException('Movimentacao nao encontrada');
+    if (!tx) throw new NotFoundException('Movimentação não encontrada');
     return tx;
   }
 
@@ -105,13 +105,13 @@ export class TransactionsService {
     const lines = rows.map((r) =>
       [
         r.date.toISOString().slice(0, 10),
-        r.type === 'INCOME' ? 'Entrada' : 'Saida',
+        r.type === 'INCOME' ? 'Entrada' : 'Saída',
         csvField(r.description),
         csvField(r.category.name),
         r.amount.toFixed(2).replace('.', ','),
       ].join(CSV_SEPARATOR),
     );
-    const header = ['Data', 'Tipo', 'Descricao', 'Categoria', 'Valor'];
+    const header = ['Data', 'Tipo', 'Descrição', 'Categoria', 'Valor'];
     return '﻿' + [header.join(CSV_SEPARATOR), ...lines].join('\r\n');
   }
 }

@@ -30,7 +30,7 @@ describe('Autenticacao', () => {
     const { token } = await registerUser(server);
     const names = (await listCategories(server, token)).map((c) => c.name);
     expect(names.sort()).toEqual(
-      ['Alimentacao', 'Casa', 'Outros', 'Trabalho', 'Transporte'].sort(),
+      ['Alimentação', 'Casa', 'Outros', 'Trabalho', 'Transporte'].sort(),
     );
   });
 
@@ -54,7 +54,7 @@ describe('Autenticacao', () => {
       .post('/auth/register')
       .send({ name: 'Outro', email: email.toUpperCase(), password: PASSWORD })
       .expect(409);
-    expect(res.body.message).toBe('E-mail ja cadastrado');
+    expect(res.body.message).toBe('E-mail já cadastrado');
   });
 
   it('login com senha errada ou e-mail inexistente responde 401', async () => {
@@ -75,9 +75,9 @@ describe('Autenticacao', () => {
       .send({ name: 'A', email: 'invalido', password: '123' })
       .expect(400);
     expect(res.body.message).toEqual([
-      'O campo nome deve ter no minimo 2 caracteres',
-      'Informe um e-mail valido',
-      'O campo senha deve ter no minimo 8 caracteres',
+      'O campo nome deve ter no mínimo 2 caracteres',
+      'Informe um e-mail válido',
+      'O campo senha deve ter no mínimo 8 caracteres',
     ]);
   });
 

@@ -306,7 +306,7 @@ describe('Movimentacoes', () => {
       expect(res.headers['content-disposition']).toContain('movimentacoes.csv');
 
       const [header, row] = res.text.replace(/^﻿/, '').split('\r\n');
-      expect(header).toBe('Data;Tipo;Descricao;Categoria;Valor');
+      expect(header).toBe('Data;Tipo;Descrição;Categoria;Valor');
       expect(row).toMatch(/^2026-10-01;Entrada;Salario;[^;]+;1500,00$/);
     });
 

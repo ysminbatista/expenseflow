@@ -13,7 +13,7 @@ const DEFAULT_CATEGORIES = [
   'Trabalho',
   'Casa',
   'Transporte',
-  'Alimentacao',
+  'Alimentação',
   'Outros',
 ];
 
@@ -27,7 +27,7 @@ export class AuthService {
   async register(dto: RegisterDto) {
     const email = dto.email.toLowerCase();
     const exists = await this.prisma.user.findUnique({ where: { email } });
-    if (exists) throw new ConflictException('E-mail ja cadastrado'); // RN04
+    if (exists) throw new ConflictException('E-mail já cadastrado'); // RN04
 
     const passwordHash = await bcrypt.hash(dto.password, 10);
     const user = await this.prisma.user.create({
@@ -50,7 +50,7 @@ export class AuthService {
     const valid =
       user && (await bcrypt.compare(dto.password, user.passwordHash));
     if (!user || !valid) {
-      throw new UnauthorizedException('E-mail ou senha invalidos');
+      throw new UnauthorizedException('E-mail ou senha inválidos');
     }
     return this.buildResponse(user);
   }

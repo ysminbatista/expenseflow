@@ -58,7 +58,7 @@ export async function api<T>(
       body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
     });
   } catch {
-    throw new ApiError("Nao foi possivel conectar ao servidor", 0);
+    throw new ApiError("Não foi possível conectar ao servidor", 0);
   }
 
   const body = await response.json().catch(() => null);
@@ -131,9 +131,9 @@ export async function downloadFile(path: string, filename: string) {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
   } catch {
-    throw new ApiError("Nao foi possivel conectar ao servidor", 0);
+    throw new ApiError("Não foi possível conectar ao servidor", 0);
   }
-  if (!response.ok) throw new ApiError("Nao foi possivel exportar", response.status);
+  if (!response.ok) throw new ApiError("Não foi possível exportar", response.status);
 
   const url = URL.createObjectURL(await response.blob());
   const link = document.createElement("a");
