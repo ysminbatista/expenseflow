@@ -294,7 +294,7 @@ describe('Movimentacoes', () => {
   });
 
   describe('RN12: exportacao CSV', () => {
-    it('gera CSV com cabecalho, tipo em portugues e valor com 2 casas', async () => {
+    it('gera CSV no padrao do Excel em portugues (; e virgula decimal)', async () => {
       const { create, token } = await setup();
       await create({ type: 'INCOME', amount: 1500, description: 'Salario' });
 
@@ -306,20 +306,20 @@ describe('Movimentacoes', () => {
       expect(res.headers['content-disposition']).toContain('movimentacoes.csv');
 
       const [header, row] = res.text.replace(/^﻿/, '').split('\r\n');
-      expect(header).toBe('Data,Tipo,Descricao,Categoria,Valor');
-      expect(row).toMatch(/^2026-10-01,Entrada,Salario,[^,]+,1500\.00$/);
+      expect(header).toBe('Data;Tipo;Descricao;Categoria;Valor');
+      expect(row).toMatch(/^2026-10-01;Entrada;Salario;[^;]+;1500,00$/);
     });
 
-    it('escapa virgulas e aspas e neutraliza formulas', async () => {
+    it('escapa ponto e virgula e aspas e neutraliza formulas', async () => {
       const { create, token } = await setup();
-      await create({ description: 'Pao, leite e "ovos"' });
+      await create({ description: 'Pao; leite e "ovos"' });
       await create({ description: '=HYPERLINK("http://x")' });
 
       const res = await request(server)
         .get('/transactions/export')
         .set(bearer(token))
         .expect(200);
-      expect(res.text).toContain('"Pao, leite e ""ovos"""');
+      expect(res.text).toContain('"Pao; leite e ""ovos"""');
       // formula comeca com apostrofo, para o Excel tratar como texto
       expect(res.text).toContain(`"'=HYPERLINK(""http://x"")"`);
     });

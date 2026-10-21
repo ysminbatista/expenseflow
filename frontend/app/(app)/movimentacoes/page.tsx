@@ -152,7 +152,7 @@ export default function Movimentacoes() {
                 htmlFor="filtro-inicio"
                 className="block text-sm font-medium text-gray-800"
               >
-                Data inicial
+                Periodo: de
               </label>
 
               <input
@@ -169,7 +169,7 @@ export default function Movimentacoes() {
                 htmlFor="filtro-fim"
                 className="block text-sm font-medium text-gray-800"
               >
-                Data final
+                Periodo: ate
               </label>
 
               <input
@@ -181,6 +181,20 @@ export default function Movimentacoes() {
               />
             </div>
           </div>
+
+          <p className="mt-3 text-sm text-gray-600">
+            O periodo mostra as movimentacoes cuja data esta entre as duas
+            datas, incluindo elas. Preencha so &quot;de&quot; para ver a partir
+            de um dia, ou so &quot;ate&quot; para ver ate um dia. Para ver um
+            unico dia, use a mesma data nos dois campos.
+          </p>
+
+          {dataInicial && dataFinal && dataInicial > dataFinal && (
+            <p role="alert" className="mt-2 text-sm text-red-600">
+              A data &quot;de&quot; esta depois da data &quot;ate&quot;, por
+              isso nada aparece.
+            </p>
+          )}
 
           <div className="mt-4 flex flex-wrap gap-3">
             {temFiltro && (

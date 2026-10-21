@@ -10,10 +10,14 @@ import type {
 
 const FORMULA_START = /^[=+\-@\t\r]/;
 
+// O Excel em portugues separa colunas por ponto e virgula e usa virgula
+// como separador decimal; com virgula o arquivo abriria numa coluna so.
+const CSV_SEPARATOR = ';';
+
 // Escapa um campo CSV e neutraliza formulas (CSV injection) em planilhas.
 function csvField(value: string): string {
   const safe = FORMULA_START.test(value) ? `'${value}` : value;
-  return /[",\r\n]/.test(safe) || safe !== value
+  return /[";\r\n]/.test(safe) || safe !== value
     ? `"${safe.replace(/"/g, '""')}"`
     : safe;
 }
@@ -104,9 +108,10 @@ export class TransactionsService {
         r.type === 'INCOME' ? 'Entrada' : 'Saida',
         csvField(r.description),
         csvField(r.category.name),
-        r.amount.toFixed(2),
-      ].join(','),
+        r.amount.toFixed(2).replace('.', ','),
+      ].join(CSV_SEPARATOR),
     );
-    return '﻿' + ['Data,Tipo,Descricao,Categoria,Valor', ...lines].join('\r\n');
+    const header = ['Data', 'Tipo', 'Descricao', 'Categoria', 'Valor'];
+    return '﻿' + [header.join(CSV_SEPARATOR), ...lines].join('\r\n');
   }
 }

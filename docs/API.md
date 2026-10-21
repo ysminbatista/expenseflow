@@ -169,10 +169,11 @@ Os gastos por categoria, mostrados no dashboard, nao tem rota propria: o fronten
 
 Exporta as movimentacoes do usuario em CSV. Aceita os mesmos filtros de `GET /transactions`.
 
-- Cabecalho: `Data,Tipo,Descricao,Categoria,Valor`
-- Tipo em portugues (`Entrada` ou `Saida`) e valor com 2 casas.
+- Separador de colunas: ponto e virgula (`;`), o padrao do Excel em portugues. Com virgula, o Excel abriria tudo numa coluna so.
+- Cabecalho: `Data;Tipo;Descricao;Categoria;Valor`
+- Data em `AAAA-MM-DD`, tipo em portugues (`Entrada` ou `Saida`) e valor com 2 casas e virgula decimal (ex.: `1500,00`).
 - Codificacao UTF-8 com BOM, para o Excel abrir os acentos corretamente.
-- Campos com virgula ou aspas sao escapados. Textos que comecam com `=`, `+`, `-` ou `@` recebem um apostrofo na frente, para a planilha nao executa-los como formula.
+- Campos com ponto e virgula ou aspas sao escapados. Textos que comecam com `=`, `+`, `-` ou `@` recebem um apostrofo na frente, para a planilha nao executa-los como formula.
 - Resposta com `Content-Disposition: attachment; filename="movimentacoes.csv"`.
 
 Como a rota exige o token no header, o frontend baixa o arquivo com `fetch`, e nao por um link direto.
