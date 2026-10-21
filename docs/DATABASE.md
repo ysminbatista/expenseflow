@@ -2,13 +2,13 @@
 
 ## Objetivo
 
-O banco de dados e responsavel por armazenar as informacoes dos usuarios, categorias e movimentacoes financeiras do ExpenseFlow.
+O banco de dados é responsável por armazenar as informações dos usuários, categorias e movimentações financeiras do ExpenseFlow.
 
-O banco e o PostgreSQL, acessado pelo Prisma. A fonte da verdade da estrutura e o arquivo `backend/prisma/schema.prisma`, e cada alteracao gera uma migracao em `backend/prisma/migrations`.
+O banco é o PostgreSQL, acessado pelo Prisma. A fonte da verdade da estrutura é o arquivo `backend/prisma/schema.prisma`, e cada alteração gera uma migração em `backend/prisma/migrations`.
 
 ## Tabelas
 
-O banco de dados e composto pelas seguintes tabelas:
+O banco de dados é composto pelas seguintes tabelas:
 
 User
 
@@ -16,43 +16,43 @@ Category
 
 Transaction
 
-Os nomes das tabelas e das colunas seguem o padrao do Prisma: tabelas no singular e colunas em camelCase (por exemplo `passwordHash` e `userId`).
+Os nomes das tabelas e das colunas seguem o padrão do Prisma: tabelas no singular e colunas em camelCase (por exemplo `passwordHash` e `userId`).
 
 ## Tabela User
 
-A tabela User e responsavel por armazenar os dados dos usuarios.
+A tabela User é responsável por armazenar os dados dos usuários.
 
 ### Campos
 
 id
 
-Identificador unico do usuario (numero sequencial).
+Identificador único do usuário (número sequencial).
 
 name
 
-Nome do usuario.
+Nome do usuário.
 
 email
 
-Endereco de e-mail do usuario. Unico. A API o guarda em minusculas.
+Endereço de e-mail do usuário. Único. A API o guarda em minúsculas.
 
 passwordHash
 
-Hash da senha (bcrypt). A senha em si nunca e armazenada.
+Hash da senha (bcrypt). A senha em si nunca é armazenada.
 
 createdAt
 
-Data de criacao da conta.
+Data de criação da conta.
 
 ## Tabela Category
 
-A tabela Category e responsavel por armazenar as categorias utilizadas nas movimentacoes.
+A tabela Category é responsável por armazenar as categorias utilizadas nas movimentações.
 
 ### Campos
 
 id
 
-Identificador unico da categoria.
+Identificador único da categoria.
 
 name
 
@@ -60,106 +60,106 @@ Nome da categoria.
 
 userId
 
-Identificador do usuario que possui a categoria.
+Identificador do usuário que possui a categoria.
 
 createdAt
 
-Data de criacao da categoria.
+Data de criação da categoria.
 
 ## Tabela Transaction
 
-A tabela Transaction e responsavel por armazenar as movimentacoes financeiras.
+A tabela Transaction é responsável por armazenar as movimentações financeiras.
 
 ### Campos
 
 id
-Identificador unico da movimentacao.
+Identificador único da movimentação.
 
 type
-Tipo da movimentacao. Enum `TransactionType`: `INCOME` (entrada) ou `EXPENSE` (saida).
+Tipo da movimentação. Enum `TransactionType`: `INCOME` (entrada) ou `EXPENSE` (saída).
 
 description
-Descricao da movimentacao.
+Descrição da movimentação.
 
 amount
-Valor da movimentacao. Tipo `DECIMAL(10,2)`, sem ponto flutuante, com no maximo 99.999.999,99.
+Valor da movimentação. Tipo `DECIMAL(10,2)`, sem ponto flutuante, com no máximo 99.999.999,99.
 
 date
-Data da movimentacao.
+Data da movimentação.
 
 categoryId
-Identificador da categoria utilizada na movimentacao.
+Identificador da categoria utilizada na movimentação.
 
 userId
-Identificador do usuario que possui a movimentacao.
+Identificador do usuário que possui a movimentação.
 
 createdAt
-Data de criacao da movimentacao.
+Data de criação da movimentação.
 
 updatedAt
-Data da ultima atualizacao da movimentacao.
+Data da última atualização da movimentação.
 
 ## Relacionamentos
 
-Um usuario pode possuir varias categorias.
+Um usuário pode possuir várias categorias.
 
-Um usuario pode possuir varias movimentacoes.
+Um usuário pode possuir várias movimentações.
 
-Uma categoria pode estar relacionada a varias movimentacoes.
+Uma categoria pode estar relacionada a várias movimentações.
 
-Cada movimentacao pertence a um usuario.
+Cada movimentação pertence a um usuário.
 
-Cada movimentacao pertence a uma categoria.
+Cada movimentação pertence a uma categoria.
 
 ## Relacionamento entre User e Category
 
-A tabela Category possui o campo userId para identificar qual usuario criou e possui aquela categoria.
+A tabela Category possui o campo userId para identificar qual usuário criou e possui aquela categoria.
 
-Um usuario pode possuir varias categorias.
+Um usuário pode possuir várias categorias.
 
-Ao excluir um usuario, as categorias dele sao excluidas junto (`ON DELETE CASCADE`).
+Ao excluir um usuário, as categorias dele são excluídas junto (`ON DELETE CASCADE`).
 
 ## Relacionamento entre User e Transaction
 
-A tabela Transaction possui o campo userId para identificar qual usuario possui aquela movimentacao.
+A tabela Transaction possui o campo userId para identificar qual usuário possui aquela movimentação.
 
-Um usuario pode possuir varias movimentacoes.
+Um usuário pode possuir várias movimentações.
 
-Ao excluir um usuario, as movimentacoes dele sao excluidas junto (`ON DELETE CASCADE`).
+Ao excluir um usuário, as movimentações dele são excluídas junto (`ON DELETE CASCADE`).
 
 ## Relacionamento entre Category e Transaction
 
-A tabela Transaction possui o campo categoryId para identificar a categoria da movimentacao.
+A tabela Transaction possui o campo categoryId para identificar a categoria da movimentação.
 
-Uma categoria pode ser utilizada em varias movimentacoes.
+Uma categoria pode ser utilizada em várias movimentações.
 
-O banco impede a exclusao de uma categoria que tenha movimentacoes (`ON DELETE RESTRICT`). Por isso a API, antes de excluir uma categoria em uso, move as movimentacoes para outra categoria (veja `reassignTo` em `API.md`).
+O banco impede a exclusão de uma categoria que tenha movimentações (`ON DELETE RESTRICT`). Por isso a API, antes de excluir uma categoria em uso, move as movimentações para outra categoria (veja `reassignTo` em `API.md`).
 
 ## Regras do Banco de Dados
 
-Cada usuario deve possuir um id unico.
+Cada usuário deve possuir um id único.
 
-Cada categoria deve possuir um id unico.
+Cada categoria deve possuir um id único.
 
-Cada movimentacao deve possuir um id unico.
+Cada movimentação deve possuir um id único.
 
-O email do usuario deve ser unico (indice unico em `email`).
+O email do usuário deve ser único (índice único em `email`).
 
-O nome da categoria deve ser unico por usuario (indice unico em `userId` + `name`). Dois usuarios podem ter categorias com o mesmo nome.
+O nome da categoria deve ser único por usuário (índice único em `userId` + `name`). Dois usuários podem ter categorias com o mesmo nome.
 
-O tipo da movimentacao deve ser entrada ou saida (garantido pelo enum `TransactionType`).
+O tipo da movimentação deve ser entrada ou saída (garantido pelo enum `TransactionType`).
 
-Toda movimentacao deve estar relacionada a um usuario.
+Toda movimentação deve estar relacionada a um usuário.
 
-Toda movimentacao deve estar relacionada a uma categoria.
+Toda movimentação deve estar relacionada a uma categoria.
 
-O valor da movimentacao deve ser positivo. Essa regra e garantida pela API (validacao e testes automatizados), e nao por uma restricao no banco.
+O valor da movimentação deve ser positivo. Essa regra é garantida pela API (validação e testes automatizados), e não por uma restrição no banco.
 
-A comparacao de nomes de categoria sem diferenciar maiusculas de minusculas tambem e feita pela API. O indice do banco diferencia maiusculas.
+A comparação de nomes de categoria sem diferenciar maiúsculas de minúsculas também é feita pela API. O índice do banco diferencia maiúsculas.
 
 ## Categorias Iniciais
 
-O sistema cria as seguintes categorias para cada novo usuario, no momento do cadastro:
+O sistema cria as seguintes categorias para cada novo usuário, no momento do cadastro:
 
 Trabalho
 
@@ -167,35 +167,35 @@ Casa
 
 Transporte
 
-Alimentacao
+Alimentação
 
 Outros
 
-Elas ficam gravadas na tabela Category, em nome do usuario, e podem ser editadas ou removidas como qualquer outra.
+Elas ficam gravadas na tabela Category, em nome do usuário, e podem ser editadas ou removidas como qualquer outra.
 
-## Calculo do Saldo
+## Cálculo do Saldo
 
-O saldo nao e armazenado diretamente no banco de dados.
+O saldo não é armazenado diretamente no banco de dados.
 
-O saldo e calculado com base nas movimentacoes do usuario.
+O saldo é calculado com base nas movimentações do usuário.
 
-As movimentacoes do tipo entrada aumentam o saldo.
+As movimentações do tipo entrada aumentam o saldo.
 
-As movimentacoes do tipo saida diminuem o saldo.
+As movimentações do tipo saída diminuem o saldo.
 
-## Seguranca dos Dados
+## Segurança dos Dados
 
-Cada movimentacao esta relacionada ao usuario que a criou.
+Cada movimentação está relacionada ao usuário que a criou.
 
-A API utiliza o userId do token de autenticacao em toda consulta, para garantir que um usuario tenha acesso somente as suas proprias movimentacoes e categorias.
+A API utiliza o userId do token de autenticação em toda consulta, para garantir que um usuário tenha acesso somente as suas próprias movimentações e categorias.
 
-Um usuario nao consegue acessar, editar ou excluir movimentacoes pertencentes a outro usuario. Testes automatizados cobrem esse isolamento.
+Um usuário não consegue acessar, editar ou excluir movimentações pertencentes a outro usuário. Testes automatizados cobrem esse isolamento.
 
 ## Ambientes
 
 | Banco | Uso |
 |-------|-----|
 | `expenseflow` | Desenvolvimento |
-| `expenseflow_test` | Testes automatizados. Criado no mesmo PostgreSQL do Docker e usado somente pelos testes. |
+| `expenseflow_test` | Testes automatizados. Criado no mesmo PostgreSQL do Docker é usado somente pelos testes. |
 
-Para aplicar as migracoes: `npx prisma migrate deploy` (dentro de `backend`). Para gerar o cliente do Prisma: `npx prisma generate`.
+Para aplicar as migrações: `npx prisma migrate deploy` (dentro de `backend`). Para gerar o cliente do Prisma: `npx prisma generate`.

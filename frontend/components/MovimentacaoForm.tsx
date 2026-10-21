@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowLeft, TrendingDown, TrendingUp, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
@@ -9,7 +10,7 @@ import {
   type TransactionInput,
   type TransactionType,
 } from "@/lib/api";
-import { categoryEmoji } from "@/lib/categories";
+import { categoryIconElement } from "@/lib/categories";
 
 type Props = {
   title: string;
@@ -21,18 +22,23 @@ type Props = {
 const inputClass =
   "mt-2 w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100";
 
-const TIPOS: { value: TransactionType; label: string; icon: string; on: string }[] =
+const TIPOS: {
+  value: TransactionType;
+  label: string;
+  icon: LucideIcon;
+  on: string;
+}[] =
   [
     {
       value: "INCOME",
       label: "Entrada",
-      icon: "📈",
+      icon: TrendingUp,
       on: "border-emerald-500 bg-emerald-50 text-emerald-700 ring-4 ring-emerald-100",
     },
     {
       value: "EXPENSE",
       label: "Saída",
-      icon: "📉",
+      icon: TrendingDown,
       on: "border-rose-500 bg-rose-50 text-rose-700 ring-4 ring-rose-100",
     },
   ];
@@ -99,9 +105,10 @@ export default function MovimentacaoForm({
     <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8 sm:px-6">
       <Link
         href="/movimentacoes"
-        className="text-sm font-medium text-gray-600 hover:text-indigo-700"
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-indigo-700"
       >
-        ← Voltar para as movimentações
+        <ArrowLeft aria-hidden="true" className="h-4 w-4" />
+        Voltar para as movimentações
       </Link>
 
       <h1 className="mt-3 animate-fade-up text-2xl font-bold text-gray-900 sm:text-3xl">
@@ -134,7 +141,7 @@ export default function MovimentacaoForm({
                       : "border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50"
                   }`}
                 >
-                  <span aria-hidden="true">{opcao.icon}</span>
+                  <opcao.icon aria-hidden="true" className="h-5 w-5" />
                   {opcao.label}
                 </button>
               );
@@ -202,9 +209,9 @@ export default function MovimentacaoForm({
           <div className="relative">
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute left-4 top-2 flex h-full items-center text-xl"
+              className="pointer-events-none absolute left-4 top-2 flex h-full items-center text-indigo-600"
             >
-              {categoriaAtual ? categoryEmoji(categoriaAtual.name) : "🏷️"}
+              {categoryIconElement(categoriaAtual?.name ?? "", "h-5 w-5")}
             </span>
             <select
               id="category"

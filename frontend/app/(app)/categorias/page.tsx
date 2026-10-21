@@ -1,9 +1,10 @@
 "use client";
 
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import CategoryBadge from "@/components/CategoryBadge";
 import { useToast } from "@/components/Toast";
 import { ApiError, api, type Category } from "@/lib/api";
-import { categoryEmoji } from "@/lib/categories";
 
 const inputClass =
   "rounded-xl border border-gray-300 px-4 py-3 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100";
@@ -168,8 +169,9 @@ export default function Categorias() {
 
           <button
             type="submit"
-            className="rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-3 font-semibold text-white shadow-md shadow-indigo-500/30 transition hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0"
+            className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-3 font-semibold text-white shadow-md shadow-indigo-500/30 transition hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0"
           >
+            <Plus aria-hidden="true" className="h-5 w-5" />
             Adicionar
           </button>
         </form>
@@ -269,9 +271,7 @@ export default function Categorias() {
               ) : (
                 <>
                   <p className="flex min-w-0 items-center gap-3 font-medium text-gray-900">
-                    <span aria-hidden="true" className="text-2xl">
-                      {categoryEmoji(categoria.name)}
-                    </span>
+                    <CategoryBadge name={categoria.name} />
                     <span className="min-w-0 break-words">{categoria.name}</span>
                   </p>
 
@@ -279,16 +279,18 @@ export default function Categorias() {
                     <button
                       type="button"
                       onClick={() => iniciarEdicao(categoria)}
-                      className="rounded-xl bg-amber-500 px-3 py-2 font-semibold text-white transition hover:bg-amber-600 active:scale-95 sm:px-4"
+                      className="flex items-center gap-2 rounded-xl bg-amber-500 px-3 py-2 font-semibold text-white transition hover:bg-amber-600 active:scale-95 sm:px-4"
                     >
+                      <Pencil aria-hidden="true" className="h-4 w-4" />
                       Editar
                     </button>
 
                     <button
                       type="button"
                       onClick={() => excluirCategoria(categoria)}
-                      className="rounded-xl bg-rose-600 px-3 py-2 font-semibold text-white transition hover:bg-rose-700 active:scale-95 sm:px-4"
+                      className="flex items-center gap-2 rounded-xl bg-rose-600 px-3 py-2 font-semibold text-white transition hover:bg-rose-700 active:scale-95 sm:px-4"
                     >
+                      <Trash2 aria-hidden="true" className="h-4 w-4" />
                       Excluir
                     </button>
                   </div>

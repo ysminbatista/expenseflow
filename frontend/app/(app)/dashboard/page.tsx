@@ -1,8 +1,20 @@
 "use client";
 
+import {
+  Plus,
+  Rocket,
+  PartyPopper,
+  Scale,
+  Sprout,
+  TrendingDown,
+  TrendingUp,
+  TriangleAlert,
+  Wallet,
+} from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import AnimatedMoney from "@/components/AnimatedMoney";
+import CategoryBadge from "@/components/CategoryBadge";
 import { useUser } from "@/components/UserContext";
 import {
   ApiError,
@@ -11,18 +23,38 @@ import {
   type Summary,
   type Transaction,
 } from "@/lib/api";
-import { categoryEmoji, greeting } from "@/lib/categories";
+import { greeting } from "@/lib/categories";
 
 type Dados = { summary: Summary; gastos: [string, number][] };
 
-// Frase que acompanha o saldo
+// Frase (com ícone) que acompanha o saldo
 function humor(saldo: number, temMovimentacao: boolean) {
   if (!temMovimentacao) {
-    return "Cadastre a sua primeira movimentação para começar 🚀";
+    return {
+      icon: Rocket,
+      color: "text-indigo-500",
+      text: "Cadastre a sua primeira movimentação para começar",
+    };
   }
-  if (saldo > 0) return "Você está no azul! Continue assim 🎉";
-  if (saldo < 0) return "Atenção: as saídas passaram das entradas 😬";
-  return "Tudo zerado: entradas e saídas empatadas ⚖️";
+  if (saldo > 0) {
+    return {
+      icon: PartyPopper,
+      color: "text-emerald-500",
+      text: "Você está no azul! Continue assim",
+    };
+  }
+  if (saldo < 0) {
+    return {
+      icon: TriangleAlert,
+      color: "text-rose-500",
+      text: "Atenção: as saídas passaram das entradas",
+    };
+  }
+  return {
+    icon: Scale,
+    color: "text-gray-500",
+    text: "Tudo zerado: entradas e saídas empatadas",
+  };
 }
 
 export default function Dashboard() {
@@ -61,26 +93,41 @@ export default function Dashboard() {
   const saidas = Number(dados?.summary.expense ?? 0);
   const totalGastos = dados?.gastos.reduce((soma, [, v]) => soma + v, 0) ?? 0;
   const primeiroNome = user?.name.split(" ")[0];
+  const saudacao = greeting();
+  const mood = dados ? humor(saldo, entradas + saidas > 0) : null;
 
   return (
     <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6">
       <div className="flex flex-wrap items-end justify-between gap-4 animate-fade-up">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-            {greeting()}, {primeiroNome} <span aria-hidden="true">👋</span>
+          <h1 className="flex items-center gap-3 text-2xl font-bold text-gray-900 sm:text-3xl">
+            <saudacao.icon
+              aria-hidden="true"
+              className="h-7 w-7 text-amber-500"
+            />
+            {saudacao.text}, {primeiroNome}
           </h1>
-          <p className="mt-1 text-gray-600">
-            {dados
-              ? humor(saldo, entradas + saidas > 0)
-              : "Buscando os seus números..."}
+          <p className="mt-1 flex items-center gap-2 text-gray-600">
+            {mood ? (
+              <>
+                <mood.icon
+                  aria-hidden="true"
+                  className={`h-5 w-5 shrink-0 ${mood.color}`}
+                />
+                {mood.text}
+              </>
+            ) : (
+              "Buscando os seus números..."
+            )}
           </p>
         </div>
 
         <Link
           href="/nova-movimentacao"
-          className="rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-3 font-semibold text-white shadow-md shadow-indigo-500/30 transition hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0"
+          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-3 font-semibold text-white shadow-md shadow-indigo-500/30 transition hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0"
         >
-          + Nova movimentação
+          <Plus aria-hidden="true" className="h-5 w-5" />
+          Nova movimentação
         </Link>
       </div>
 
@@ -104,7 +151,7 @@ export default function Dashboard() {
               }`}
             >
               <p className="flex items-center gap-2 font-medium text-white/85">
-                <span aria-hidden="true">💰</span> Saldo
+                <Wallet aria-hidden="true" className="h-5 w-5" /> Saldo
               </p>
               <p className="mt-3 text-3xl font-extrabold tracking-tight">
                 <AnimatedMoney value={saldo} />
@@ -116,7 +163,7 @@ export default function Dashboard() {
               className="animate-fade-up rounded-2xl border border-emerald-100 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
             >
               <p className="flex items-center gap-2 font-medium text-gray-700">
-                <span aria-hidden="true">📈</span> Entradas
+                <TrendingUp aria-hidden="true" className="h-5 w-5 text-emerald-600" /> Entradas
               </p>
               <p className="mt-3 text-3xl font-extrabold tracking-tight text-emerald-600">
                 <AnimatedMoney value={entradas} />
@@ -128,7 +175,7 @@ export default function Dashboard() {
               className="animate-fade-up rounded-2xl border border-rose-100 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
             >
               <p className="flex items-center gap-2 font-medium text-gray-700">
-                <span aria-hidden="true">📉</span> Saídas
+                <TrendingDown aria-hidden="true" className="h-5 w-5 text-rose-600" /> Saídas
               </p>
               <p className="mt-3 text-3xl font-extrabold tracking-tight text-rose-600">
                 <AnimatedMoney value={saidas} />
@@ -146,8 +193,11 @@ export default function Dashboard() {
 
             {dados.gastos.length === 0 ? (
               <div className="mt-6 flex flex-col items-center gap-2 py-6 text-center">
-                <span className="text-4xl" aria-hidden="true">
-                  🌱
+                <span
+                  aria-hidden="true"
+                  className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-500"
+                >
+                  <Sprout className="h-8 w-8" />
                 </span>
                 <p className="text-gray-700">Nenhuma saída cadastrada ainda.</p>
               </div>
@@ -159,9 +209,7 @@ export default function Dashboard() {
                     <li key={categoria}>
                       <div className="flex items-center justify-between gap-3">
                         <span className="flex min-w-0 items-center gap-2 font-medium text-gray-900">
-                          <span aria-hidden="true" className="text-xl">
-                            {categoryEmoji(categoria)}
-                          </span>
+                          <CategoryBadge name={categoria} />
                           <span className="truncate">{categoria}</span>
                         </span>
 

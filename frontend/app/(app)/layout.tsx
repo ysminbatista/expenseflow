@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowLeftRight, LayoutDashboard, LogOut, Tags } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -8,9 +9,9 @@ import { UserProvider } from "@/components/UserContext";
 import { ApiError, api, clearToken, getToken, type User } from "@/lib/api";
 
 const LINKS = [
-  { href: "/dashboard", label: "Dashboard", icon: "📊" },
-  { href: "/movimentacoes", label: "Movimentações", icon: "💸" },
-  { href: "/categorias", label: "Categorias", icon: "🏷️" },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/movimentacoes", label: "Movimentações", icon: ArrowLeftRight },
+  { href: "/categorias", label: "Categorias", icon: Tags },
 ];
 
 // Área logada: confere o token (RN11), mostra a navegação e o botão Sair.
@@ -66,9 +67,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             </span>
             <button
               onClick={logout}
-              className="rounded-lg border border-gray-300 px-3 py-2 font-medium text-gray-700 transition hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700"
+              className="flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 font-medium text-gray-700 transition hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700"
             >
-              Sair
+              <LogOut aria-hidden="true" className="h-4 w-4" />
+              <span className="sr-only sm:not-sr-only">Sair</span>
             </button>
           </div>
 
@@ -89,12 +91,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                       : "text-gray-700 hover:bg-gray-100"
                   }`}
                 >
-                  <span
+                  <link.icon
                     aria-hidden="true"
-                    className="transition group-hover:scale-125"
-                  >
-                    {link.icon}
-                  </span>
+                    className="h-5 w-5 transition group-hover:scale-110"
+                  />
                   {link.label}
                 </Link>
               );

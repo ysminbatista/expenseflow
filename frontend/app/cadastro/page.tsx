@@ -54,10 +54,7 @@ export default function Cadastro() {
   }
 
   return (
-    <AuthShell
-      title="Crie a sua conta ✨"
-      subtitle="Leva menos de um minuto"
-    >
+    <AuthShell title="Crie a sua conta" subtitle="Leva menos de um minuto">
       <form className="space-y-5" onSubmit={handleSubmit}>
         <div>
           <label

@@ -2,11 +2,11 @@
 
 ## Objetivo
 
-A arquitetura do ExpenseFlow sera organizada em diferentes partes para separar as responsabilidades do sistema.
+A arquitetura do ExpenseFlow será organizada em diferentes partes para separar as responsabilidades do sistema.
 
 ## Estrutura
 
-O sistema sera dividido em:
+O sistema será dividido em:
 
 Frontend
 
@@ -18,35 +18,35 @@ Banco de dados
 
 ## Frontend
 
-O frontend sera responsavel pela interface que o usuario utiliza.
+O frontend será responsável pela interface que o usuário utiliza.
 
-A tecnologia utilizada sera o Next.js.
+A tecnologia utilizada será o Next.js.
 
-O frontend sera responsavel por:
+O frontend será responsável por:
 
 Exibir as telas do sistema
 
-Permitir a interacao do usuario
+Permitir a interação do usuário
 
-Enviar solicitacoes para a API
+Enviar solicitações para a API
 
 Exibir os dados recebidos da API
 
-Adaptar a interface para dispositivos moveis e computadores
+Adaptar a interface para dispositivos móveis e computadores
 
 ## Backend
 
-O backend sera responsavel pelas regras e pelo processamento das informacoes.
+O backend será responsável pelas regras e pelo processamento das informações.
 
-A tecnologia utilizada sera o NestJS.
+A tecnologia utilizada será o NestJS.
 
-O backend sera responsavel por:
+O backend será responsável por:
 
-Processar as solicitacoes da API
+Processar as solicitações da API
 
 Validar os dados recebidos
 
-Aplicar as regras de negocio
+Aplicar as regras de negócio
 
 Controlar o acesso aos dados
 
@@ -54,15 +54,15 @@ Consultar e alterar os dados do banco
 
 ## API
 
-A API sera responsavel pela comunicacao entre o frontend e o backend.
+A API será responsável pela comunicação entre o frontend e o backend.
 
-O frontend enviara solicitacoes para a API.
+O frontend enviará solicitações para a API.
 
-O backend processara essas solicitacoes e retornara as informacoes necessarias.
+O backend processará essas solicitações e retornará as informações necessárias.
 
 Exemplo:
 
-Usuario
+Usuário
 
 Frontend
 
@@ -76,27 +76,27 @@ Resposta
 
 Frontend
 
-Usuario
+Usuário
 
 ## Banco de Dados
 
-O banco de dados sera responsavel pelo armazenamento das informacoes do sistema.
+O banco de dados será responsável pelo armazenamento das informações do sistema.
 
-A tecnologia utilizada sera o PostgreSQL.
+A tecnologia utilizada será o PostgreSQL.
 
-Os principais dados armazenados serao:
+Os principais dados armazenados serão:
 
-Usuarios
+Usuários
 
 Categorias
 
-Movimentacoes
+Movimentações
 
 ## Prisma
 
-O Prisma sera utilizado como ORM para facilitar a comunicacao entre o backend e o banco de dados.
+O Prisma será utilizado como ORM para facilitar a comunicação entre o backend e o banco de dados.
 
-O Prisma sera responsavel por:
+O Prisma será responsável por:
 
 Definir os modelos do banco
 
@@ -110,15 +110,15 @@ Excluir registros
 
 ## Docker
 
-O Docker sera utilizado para facilitar a configuracao do ambiente de desenvolvimento.
+O Docker será utilizado para facilitar a configuração do ambiente de desenvolvimento.
 
-O banco de dados PostgreSQL podera ser executado utilizando Docker.
+O banco de dados PostgreSQL poderá ser executado utilizando Docker.
 
-## Fluxo de uma movimentacao
+## Fluxo de uma movimentação
 
-Quando o usuario cadastrar uma movimentacao, o fluxo sera:
+Quando o usuário cadastrar uma movimentação, o fluxo será:
 
-Usuario acessa a tela de nova movimentacao
+Usuário acessa a tela de nova movimentação
 
 Frontend coleta os dados
 
@@ -128,29 +128,29 @@ Backend recebe os dados
 
 Backend valida os dados
 
-Backend aplica as regras de negocio
+Backend aplica as regras de negócio
 
 Backend utiliza o Prisma para salvar os dados
 
 Prisma envia os dados para o PostgreSQL
 
-PostgreSQL armazena a movimentacao
+PostgreSQL armazena a movimentação
 
 Backend retorna uma resposta
 
 Frontend atualiza a interface
 
-## Seguranca
+## Segurança
 
-O backend deve verificar a identidade do usuario antes de permitir o acesso aos seus dados.
+O backend deve verificar a identidade do usuário antes de permitir o acesso aos seus dados.
 
-As movimentacoes devem estar relacionadas ao usuario autenticado.
+As movimentações devem estar relacionadas ao usuário autenticado.
 
-Um usuario nao pode acessar dados pertencentes a outro usuario.
+Um usuário não pode acessar dados pertencentes a outro usuário.
 
 ## Responsividade
 
-O frontend deve funcionar em dispositivos moveis e computadores.
+O frontend deve funcionar em dispositivos móveis e computadores.
 
 A interface deve se adaptar a diferentes tamanhos de tela.
 

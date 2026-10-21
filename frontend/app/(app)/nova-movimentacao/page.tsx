@@ -13,7 +13,7 @@ export default function NovaMovimentacao() {
     await api("/transactions", { method: "POST", body: values });
     toast(
       values.type === "INCOME"
-        ? "Entrada registrada! 🎉"
+        ? "Entrada registrada!"
         : "Saída registrada!",
     );
     router.push("/movimentacoes");

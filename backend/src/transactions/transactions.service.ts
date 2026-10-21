@@ -12,6 +12,8 @@ const FORMULA_START = /^[=+\-@\t\r]/;
 
 // O Excel em portugues separa colunas por ponto e virgula e usa virgula
 // como separador decimal; com virgula o arquivo abriria numa coluna so.
+// Marca de ordem de bytes: faz o Excel reconhecer o arquivo como UTF-8 (acentos)
+const BOM = String.fromCharCode(0xfeff);
 const CSV_SEPARATOR = ';';
 
 // Escapa um campo CSV e neutraliza formulas (CSV injection) em planilhas.
@@ -112,6 +114,6 @@ export class TransactionsService {
       ].join(CSV_SEPARATOR),
     );
     const header = ['Data', 'Tipo', 'Descrição', 'Categoria', 'Valor'];
-    return '﻿' + [header.join(CSV_SEPARATOR), ...lines].join('\r\n');
+    return BOM + [header.join(CSV_SEPARATOR), ...lines].join('\r\n');
   }
 }

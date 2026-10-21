@@ -1,7 +1,9 @@
 "use client";
 
+import { Coins, FileDown, Plus, SearchX } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import CategoryBadge from "@/components/CategoryBadge";
 import { useToast } from "@/components/Toast";
 import {
   ApiError,
@@ -12,7 +14,6 @@ import {
   type Category,
   type Transaction,
 } from "@/lib/api";
-import { categoryEmoji } from "@/lib/categories";
 
 const inputClass =
   "mt-1 w-full rounded-xl border border-gray-300 px-3 py-2.5 text-gray-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100";
@@ -93,7 +94,7 @@ export default function Movimentacoes() {
         `/transactions/export${querystring()}`,
         "movimentacoes.csv",
       );
-      toast("Arquivo CSV baixado! 📄");
+      toast("Arquivo CSV baixado!");
     } catch (err) {
       setErro(err instanceof ApiError ? err.message : "Erro inesperado");
     }
@@ -113,9 +114,10 @@ export default function Movimentacoes() {
 
         <Link
           href="/nova-movimentacao"
-          className="rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-3 font-semibold text-white shadow-md shadow-indigo-500/30 transition hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0"
+          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-3 font-semibold text-white shadow-md shadow-indigo-500/30 transition hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0"
         >
-          + Nova movimentação
+          <Plus aria-hidden="true" className="h-5 w-5" />
+          Nova movimentação
         </Link>
       </div>
 
@@ -221,9 +223,10 @@ export default function Movimentacoes() {
 
           <button
             onClick={exportarCSV}
-            className="rounded-xl bg-emerald-600 px-4 py-2 font-semibold text-white transition hover:bg-emerald-700 active:scale-95"
+            className="flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 font-semibold text-white transition hover:bg-emerald-700 active:scale-95"
           >
-            📄 Exportar CSV
+            <FileDown aria-hidden="true" className="h-5 w-5" />
+            Exportar CSV
           </button>
         </div>
       </section>
@@ -239,8 +242,15 @@ export default function Movimentacoes() {
         </div>
       ) : movimentacoes.length === 0 ? (
         <div className="mt-8 animate-pop rounded-2xl border border-dashed border-gray-300 bg-white p-10 text-center">
-          <span className="text-5xl" aria-hidden="true">
-            {temFiltro ? "🔍" : "🪙"}
+          <span
+            aria-hidden="true"
+            className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-indigo-50 text-indigo-500"
+          >
+            {temFiltro ? (
+              <SearchX className="h-10 w-10" />
+            ) : (
+              <Coins className="h-10 w-10" />
+            )}
           </span>
           <p className="mt-3 font-medium text-gray-800">
             {temFiltro
@@ -266,16 +276,11 @@ export default function Movimentacoes() {
             >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                 <div className="flex min-w-0 items-center gap-4">
-                  <span
-                    aria-hidden="true"
-                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-2xl ${
-                      movimentacao.type === "INCOME"
-                        ? "bg-emerald-50"
-                        : "bg-rose-50"
-                    }`}
-                  >
-                    {categoryEmoji(movimentacao.category.name)}
-                  </span>
+                  <CategoryBadge
+                    name={movimentacao.category.name}
+                    tone={movimentacao.type === "INCOME" ? "income" : "expense"}
+                    size="md"
+                  />
 
                   <div className="min-w-0">
                     <h3 className="break-words text-lg font-semibold text-gray-900">

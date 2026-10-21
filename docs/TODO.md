@@ -1,6 +1,6 @@
 # TODO do ExpenseFlow
 
-## Preparacao do ambiente
+## Preparação do ambiente
 
 [ x ] Instalar Node.js
 
@@ -10,7 +10,7 @@
 
 [ x ] Instalar VS Code
 
-[ ] Criar repositorio no GitHub
+[ x ] Criar repositório no GitHub
 
 [ x ] Criar estrutura inicial do projeto
 
@@ -30,25 +30,25 @@
 
 [ x ] Criar categorias iniciais
 
-[ x ] Executar primeira migracao
+[ x ] Executar primeira migração
 
-[ x ] Testar conexao com o banco
+[ x ] Testar conexão com o banco
 
-## Autenticacao
+## Autenticação
 
-[ x ] Criar cadastro de usuario
+[ x ] Criar cadastro de usuário
 
 [ x ] Validar e-mail
 
-[ x ] Garantir e-mail unico
+[ x ] Garantir e-mail único
 
 [ x ] Criar login
 
-[ x ] Implementar autenticacao
+[ x ] Implementar autenticação
 
 [ x ] Proteger rotas privadas
 
-[ x ] Testar acesso de usuarios
+[ x ] Testar acesso de usuários
 
 ## Categorias
 
@@ -62,35 +62,35 @@
 
 [ x ] Testar gerenciamento de categorias
 
-## Movimentacoes
+## Movimentações
 
-[ x ] Criar endpoint para cadastrar movimentacao
+[ x ] Criar endpoint para cadastrar movimentação
 
-[ x ] Validar tipo da movimentacao
+[ x ] Validar tipo da movimentação
 
 [ x ] Validar valor positivo
 
-[ x ] Criar endpoint para listar movimentacoes
+[ x ] Criar endpoint para listar movimentações
 
-[ x ] Criar endpoint para editar movimentacao
+[ x ] Criar endpoint para editar movimentação
 
-[ x ] Criar endpoint para excluir movimentacao
+[ x ] Criar endpoint para excluir movimentação
 
-[ x ] Implementar filtro por periodo
+[ x ] Implementar filtro por período
 
 [ x ] Implementar filtro por categoria
 
-[ x ] Garantir isolamento dos dados dos usuarios
+[ x ] Garantir isolamento dos dados dos usuários
 
-[ x ] Testar movimentacoes
+[ x ] Testar movimentações
 
 ## Dashboard
 
-[ x ] Implementar calculo do saldo
+[ x ] Implementar cálculo do saldo
 
 [ x ] Implementar total de entradas
 
-[ x ] Implementar total de saidas
+[ x ] Implementar total de saídas
 
 [ x ] Implementar gastos por categoria
 
@@ -106,23 +106,23 @@
 
 [ x ] Criar tela de dashboard
 
-[ x ] Criar tela de movimentacoes
+[ x ] Criar tela de movimentações
 
-[ x ] Criar tela de nova movimentacao
+[ x ] Criar tela de nova movimentação
 
-[ x ] Criar tela de edicao de movimentacao
+[ x ] Criar tela de edição de movimentação
 
 [ x ] Criar tela de categorias
 
 [ x ] Implementar filtros
 
-[ ] Implementar responsividade
+[ x ] Implementar responsividade
 
-## Exportacao
+## Exportação
 
-[ x ] Criar exportacao CSV
+[ x ] Criar exportação CSV
 
-[ x ] Garantir exportacao somente dos dados do usuario
+[ x ] Garantir exportação somente dos dados do usuário
 
 [ x ] Testar arquivo CSV
 
@@ -134,25 +134,25 @@
 
 [ x ] Testar categorias
 
-[ x ] Testar cadastro de movimentacao
+[ x ] Testar cadastro de movimentação
 
-[ x ] Testar edicao de movimentacao
+[ x ] Testar edição de movimentação
 
-[ x ] Testar exclusao de movimentacao
+[ x ] Testar exclusão de movimentação
 
 [ x ] Testar filtros
 
 [ ] Testar dashboard
 
-[ x ] Testar exportacao
+[ x ] Testar exportação
 
-[ x ] Testar seguranca
+[ x ] Testar segurança
 
 ## Deploy
 
-[ ] Preparar aplicacao para producao
+[ ] Preparar aplicação para produção
 
-[ ] Configurar banco de producao
+[ ] Configurar banco de produção
 
 [ ] Configurar backend
 
@@ -160,13 +160,13 @@
 
 [ ] Realizar deploy
 
-[ ] Testar aplicacao em producao
+[ ] Testar aplicação em produção
 
-## Documentacao
+## Documentação
 
-[ x ] Revisar documentacao
+[ x ] Revisar documentação
 
-[ x ] Registrar decisoes importantes
+[ x ] Registrar decisões importantes
 
 [ x ] Documentar funcionalidades
 
@@ -174,4 +174,4 @@
 
 [ ] Documentar deploy
 
-[ ] Atualizar portfolio
+[ ] Atualizar portfólio

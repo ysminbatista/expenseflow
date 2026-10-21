@@ -1,5 +1,6 @@
 "use client";
 
+import { SearchX } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
@@ -53,8 +54,11 @@ function Editar() {
     return (
       <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8 sm:px-6">
         <div className="rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
-          <span className="text-4xl" aria-hidden="true">
-            🔎
+          <span
+            aria-hidden="true"
+            className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-indigo-50 text-indigo-500"
+          >
+            <SearchX className="h-8 w-8" />
           </span>
           <p className="mt-3 text-gray-800">
             {erro || "Movimentação não informada."}

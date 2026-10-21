@@ -302,10 +302,11 @@ describe('Movimentacoes', () => {
         .get('/transactions/export')
         .set(bearer(token))
         .expect(200);
+      expect(res.text.charCodeAt(0)).toBe(0xfeff); // BOM: Excel reconhece UTF-8
       expect(res.headers['content-type']).toContain('text/csv');
       expect(res.headers['content-disposition']).toContain('movimentacoes.csv');
 
-      const [header, row] = res.text.replace(/^﻿/, '').split('\r\n');
+      const [header, row] = res.text.slice(1).split('\r\n');
       expect(header).toBe('Data;Tipo;Descrição;Categoria;Valor');
       expect(row).toMatch(/^2026-10-01;Entrada;Salario;[^;]+;1500,00$/);
     });

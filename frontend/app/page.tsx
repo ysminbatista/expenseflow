@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowLeftRight, ChartColumn, FileDown, Tags } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -7,10 +8,10 @@ import AuthShell from "@/components/AuthShell";
 import { getToken } from "@/lib/api";
 
 const FEATURES = [
-  { icon: "💸", text: "Registre entradas e saídas em segundos" },
-  { icon: "🏷️", text: "Organize tudo por categorias" },
-  { icon: "📊", text: "Acompanhe o saldo e para onde vai o dinheiro" },
-  { icon: "📄", text: "Exporte seus dados em CSV" },
+  { icon: ArrowLeftRight, text: "Registre entradas e saídas em segundos" },
+  { icon: Tags, text: "Organize tudo por categorias" },
+  { icon: ChartColumn, text: "Acompanhe o saldo e para onde vai o dinheiro" },
+  { icon: FileDown, text: "Exporte seus dados em CSV" },
 ];
 
 export default function Home() {
@@ -33,8 +34,11 @@ export default function Home() {
             style={{ animationDelay: `${150 + index * 90}ms` }}
             className="flex animate-fade-up items-center gap-3 rounded-xl bg-gray-50 px-4 py-3 text-sm text-gray-800"
           >
-            <span className="text-xl" aria-hidden="true">
-              {feature.icon}
+            <span
+              aria-hidden="true"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600"
+            >
+              <feature.icon className="h-5 w-5" />
             </span>
             {feature.text}
           </li>

@@ -32,7 +32,7 @@ export default function Login() {
   }
 
   return (
-    <AuthShell title="Bem-vindo de volta 👋" subtitle="Entre para ver o seu saldo">
+    <AuthShell title="Bem-vindo de volta" subtitle="Entre para ver o seu saldo">
       <form className="space-y-5" onSubmit={handleSubmit}>
         <div>
           <label
