@@ -249,7 +249,7 @@ export default function Categorias() {
                       <button
                         type="button"
                         onClick={() => iniciarEdicao(categoria)}
-                        className="rounded-lg bg-yellow-500 px-4 py-2 font-semibold text-white hover:bg-yellow-600"
+                        className="rounded-lg bg-yellow-500 px-3 py-2 font-semibold text-white hover:bg-yellow-600 sm:px-4"
                       >
                         Editar
                       </button>
@@ -257,7 +257,7 @@ export default function Categorias() {
                       <button
                         type="button"
                         onClick={() => excluirCategoria(categoria)}
-                        className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700"
+                        className="rounded-lg bg-red-600 px-3 py-2 font-semibold text-white hover:bg-red-700 sm:px-4"
                       >
                         Excluir
                       </button>
